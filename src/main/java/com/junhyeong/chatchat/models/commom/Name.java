@@ -1,5 +1,7 @@
 package com.junhyeong.chatchat.models.commom;
 
+import com.junhyeong.chatchat.exceptions.InvalidName;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
@@ -13,6 +15,14 @@ public class Name {
     }
 
     public Name(String value) {
+        setName(value);
+    }
+
+    private void setName(String value) {
+        if (value.length() > 20) {
+            throw new InvalidName();
+        }
+
         this.value = value;
     }
 

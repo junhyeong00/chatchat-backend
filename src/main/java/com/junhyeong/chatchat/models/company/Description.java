@@ -1,19 +1,18 @@
-package com.junhyeong.chatchat.models.user;
+package com.junhyeong.chatchat.models.company;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
-public class Nickname {
-    @Column(name = "nickname")
+public class Description {
+    @Column(name = "description")
     private String value;
 
-    public Nickname() {
+    public Description() {
     }
 
-
-    public Nickname(String value) {
+    public Description(String value) {
         this.value = value;
     }
 
@@ -31,9 +30,9 @@ public class Nickname {
             return false;
         }
 
-        Nickname otherNickname = (Nickname) object;
+        Description otherDescription = (Description) object;
 
-        return Objects.equals(value, otherNickname.value);
+        return Objects.equals(value, otherDescription.value);
     }
 
     @Override
@@ -41,4 +40,3 @@ public class Nickname {
         return Objects.hash(value);
     }
 }
-

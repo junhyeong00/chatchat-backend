@@ -1,7 +1,7 @@
 package com.junhyeong.chatchat.utils;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.junhyeong.chatchat.models.user.UserName;
+import com.junhyeong.chatchat.models.commom.UserName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

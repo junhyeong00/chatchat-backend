@@ -1,5 +1,6 @@
 package com.junhyeong.chatchat.models.user;
 
+import com.junhyeong.chatchat.models.commom.Password;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

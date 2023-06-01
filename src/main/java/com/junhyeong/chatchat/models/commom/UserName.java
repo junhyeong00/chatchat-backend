@@ -1,4 +1,4 @@
-package com.junhyeong.chatchat.models.user;
+package com.junhyeong.chatchat.models.commom;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

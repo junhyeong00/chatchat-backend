@@ -1,8 +1,8 @@
-package com.junhyeong.chatchat.applications;
+package com.junhyeong.chatchat.applications.user;
 
 import com.junhyeong.chatchat.exceptions.UserNotFound;
 import com.junhyeong.chatchat.models.user.User;
-import com.junhyeong.chatchat.models.user.UserName;
+import com.junhyeong.chatchat.models.commom.UserName;
 import com.junhyeong.chatchat.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

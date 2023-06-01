@@ -1,9 +1,10 @@
 package com.junhyeong.chatchat.applications;
 
+import com.junhyeong.chatchat.applications.token.IssueTokenService;
 import com.junhyeong.chatchat.dtos.TokenDto;
 import com.junhyeong.chatchat.exceptions.RefreshTokenNotFound;
 import com.junhyeong.chatchat.models.token.Token;
-import com.junhyeong.chatchat.models.user.UserName;
+import com.junhyeong.chatchat.models.commom.UserName;
 import com.junhyeong.chatchat.repositories.RefreshTokenRepository;
 import com.junhyeong.chatchat.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,8 +1,9 @@
 package com.junhyeong.chatchat.applications;
 
+import com.junhyeong.chatchat.applications.user.GetUserService;
 import com.junhyeong.chatchat.exceptions.UserNotFound;
 import com.junhyeong.chatchat.models.user.User;
-import com.junhyeong.chatchat.models.user.UserName;
+import com.junhyeong.chatchat.models.commom.UserName;
 import com.junhyeong.chatchat.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

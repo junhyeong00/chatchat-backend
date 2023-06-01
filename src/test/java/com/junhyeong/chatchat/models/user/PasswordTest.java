@@ -1,6 +1,7 @@
 package com.junhyeong.chatchat.models.user;
 
 import com.junhyeong.chatchat.exceptions.InvalidPassword;
+import com.junhyeong.chatchat.models.commom.Password;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

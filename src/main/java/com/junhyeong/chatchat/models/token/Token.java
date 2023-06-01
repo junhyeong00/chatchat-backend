@@ -1,6 +1,6 @@
 package com.junhyeong.chatchat.models.token;
 
-import com.junhyeong.chatchat.models.user.UserName;
+import com.junhyeong.chatchat.models.commom.UserName;
 import com.junhyeong.chatchat.utils.JwtUtil;
 
 import javax.persistence.Embedded;

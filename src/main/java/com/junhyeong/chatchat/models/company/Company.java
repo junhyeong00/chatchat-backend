@@ -1,5 +1,6 @@
-package com.junhyeong.chatchat.models.user;
+package com.junhyeong.chatchat.models.company;
 
+import com.junhyeong.chatchat.dtos.CompanyProfileDto;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Image;
 import com.junhyeong.chatchat.models.commom.Name;
@@ -15,23 +16,25 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "USERS")
-public class User {
+public class Company {
     @Id
     @GeneratedValue
     private Long id;
 
+    @Embedded
     private UserName userName;
 
+    @Embedded
     private Password password;
 
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "name"))
     private Name name;
+
+    @Embedded
+    private Description description;
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "profile_image"))
@@ -43,23 +46,33 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public User() {
+    public Company() {
     }
 
-    public User(Long id, UserName userName, Name name) {
+    public Company(Long id, UserName userName, Name name,
+                   Description description, Image profileImage) {
         this.id = id;
         this.userName = userName;
         this.name = name;
+        this.description = description;
+        this.profileImage = profileImage;
     }
 
-    public User(UserName userName, Name name) {
+    public Company(UserName userName, Name name,
+                   Description description, Image profileImage) {
         this.userName = userName;
         this.name = name;
+        this.description = description;
+        this.profileImage = profileImage;
     }
 
-    public static User fake(UserName userName) {
-        return new User(userName,
-                new Name("테스터"));
+    public static Company fake(UserName userName) {
+        return new Company(
+                1L,
+                userName,
+                new Name("악덕기업"),
+                new Description("악덕기업입니다"),
+                new Image("이미지"));
     }
 
     public void changePassword(Password password, PasswordEncoder passwordEncoder) {
@@ -70,6 +83,10 @@ public class User {
         if (!passwordEncoder.matches(password.getValue(), this.password.getValue())) {
             throw new LoginFailed();
         }
+    }
+
+    public CompanyProfileDto toProfileDto() {
+        return new CompanyProfileDto(id, name.value(), description.value(), profileImage.value());
     }
 
     public Long id() {
@@ -88,11 +105,19 @@ public class User {
         return name;
     }
 
-    public LocalDateTime getRegisteredAt() {
+    public Description description() {
+        return description;
+    }
+
+    public Image pProfileImage() {
+        return profileImage;
+    }
+
+    public LocalDateTime registeredAt() {
         return registeredAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    public LocalDateTime updatedAt() {
         return updatedAt;
     }
 }

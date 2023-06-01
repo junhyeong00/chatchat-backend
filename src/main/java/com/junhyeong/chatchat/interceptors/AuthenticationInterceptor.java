@@ -2,7 +2,7 @@ package com.junhyeong.chatchat.interceptors;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.junhyeong.chatchat.exceptions.AuthenticationError;
-import com.junhyeong.chatchat.models.user.UserName;
+import com.junhyeong.chatchat.models.commom.UserName;
 import com.junhyeong.chatchat.utils.JwtUtil;
 import org.springframework.web.servlet.HandlerInterceptor;
 

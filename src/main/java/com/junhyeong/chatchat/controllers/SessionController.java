@@ -1,12 +1,12 @@
 package com.junhyeong.chatchat.controllers;
 
-import com.junhyeong.chatchat.applications.LoginService;
+import com.junhyeong.chatchat.applications.login.LoginService;
 import com.junhyeong.chatchat.dtos.LoginRequestDto;
 import com.junhyeong.chatchat.dtos.LoginResultDto;
 import com.junhyeong.chatchat.dtos.TokenDto;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
-import com.junhyeong.chatchat.models.user.Password;
-import com.junhyeong.chatchat.models.user.UserName;
+import com.junhyeong.chatchat.models.commom.Password;
+import com.junhyeong.chatchat.models.commom.UserName;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;

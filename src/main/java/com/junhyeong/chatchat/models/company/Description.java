@@ -1,5 +1,8 @@
 package com.junhyeong.chatchat.models.company;
 
+import com.junhyeong.chatchat.exceptions.InvalidDescription;
+import com.junhyeong.chatchat.exceptions.InvalidName;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
@@ -13,6 +16,14 @@ public class Description {
     }
 
     public Description(String value) {
+        setDescription(value);
+    }
+
+    private void setDescription(String value) {
+        if (value.length() > 200) {
+            throw new InvalidDescription();
+        }
+
         this.value = value;
     }
 

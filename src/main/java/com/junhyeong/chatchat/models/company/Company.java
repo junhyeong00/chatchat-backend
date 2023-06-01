@@ -75,6 +75,15 @@ public class Company {
                 new Image("이미지"));
     }
 
+    public static Company fake(UserName userName, Name name) {
+        return new Company(
+                1L,
+                userName,
+                name,
+                new Description("악덕기업입니다"),
+                new Image("이미지"));
+    }
+
     public void changePassword(Password password, PasswordEncoder passwordEncoder) {
         this.password = Password.of(passwordEncoder.encode(password.getValue()));
     }
@@ -119,5 +128,11 @@ public class Company {
 
     public LocalDateTime updatedAt() {
         return updatedAt;
+    }
+
+    public void edit(Name name, Description description, Image profileImage) {
+        this.name = name;
+        this.description = description;
+        this.profileImage = profileImage;
     }
 }

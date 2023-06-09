@@ -1,10 +1,10 @@
-package com.junhyeong.chatchat.models.user;
+package com.junhyeong.chatchat.models.customer;
 
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Image;
 import com.junhyeong.chatchat.models.commom.Name;
 import com.junhyeong.chatchat.models.commom.Password;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,17 +15,15 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "USERS")
-public class User {
+public class Customer {
     @Id
     @GeneratedValue
     private Long id;
 
-    private UserName userName;
+    private Username userName;
 
     private Password password;
 
@@ -43,22 +41,23 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public User() {
+    public Customer() {
     }
 
-    public User(Long id, UserName userName, Name name) {
+    public Customer(Long id, Username userName, Name name) {
         this.id = id;
         this.userName = userName;
         this.name = name;
     }
 
-    public User(UserName userName, Name name) {
+    public Customer(Username userName, Name name) {
         this.userName = userName;
         this.name = name;
+        this.profileImage = new Image("기본이미지");
     }
 
-    public static User fake(UserName userName) {
-        return new User(userName,
+    public static Customer fake(Username userName) {
+        return new Customer(userName,
                 new Name("테스터"));
     }
 
@@ -76,7 +75,7 @@ public class User {
         return id;
     }
 
-    public UserName userName() {
+    public Username userName() {
         return userName;
     }
 

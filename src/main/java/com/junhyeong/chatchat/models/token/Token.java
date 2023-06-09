@@ -1,6 +1,6 @@
 package com.junhyeong.chatchat.models.token;
 
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.utils.JwtUtil;
 
 import javax.persistence.Embedded;
@@ -13,19 +13,19 @@ import java.util.UUID;
 public class Token {
     @Id
     @Embedded
-    private UserName userName;
+    private Username userName;
 
     private String number;
 
     public Token() {
     }
 
-    public Token(UserName userName, String number) {
+    public Token(Username userName, String number) {
         this.userName = userName;
         this.number = number;
     }
 
-    public static Token of(UserName userName, String token) {
+    public static Token of(Username userName, String token) {
         return new Token(userName, token);
     }
 
@@ -49,7 +49,7 @@ public class Token {
         return Objects.hash(userName);
     }
 
-    public UserName userName() {
+    public Username userName() {
         return userName;
     }
 

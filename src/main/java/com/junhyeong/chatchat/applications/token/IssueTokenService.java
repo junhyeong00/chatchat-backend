@@ -2,9 +2,9 @@ package com.junhyeong.chatchat.applications.token;
 
 import com.junhyeong.chatchat.dtos.TokenDto;
 import com.junhyeong.chatchat.exceptions.RefreshTokenNotFound;
+import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.token.Token;
-import com.junhyeong.chatchat.models.commom.UserName;
-import com.junhyeong.chatchat.repositories.RefreshTokenRepository;
+import com.junhyeong.chatchat.repositories.token.RefreshTokenRepository;
 import com.junhyeong.chatchat.utils.JwtUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +22,7 @@ public class IssueTokenService {
         this.jwtUtil = jwtUtil;
     }
 
-    public TokenDto issue(UserName userName) {
+    public TokenDto issue(Username userName) {
         String accessToken = jwtUtil.encode(userName);
         String refreshToken = jwtUtil.encode(UUID.randomUUID());
 

@@ -2,9 +2,9 @@ package com.junhyeong.chatchat.applications.company;
 
 import com.junhyeong.chatchat.dtos.EditCompanyRequest;
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
-import com.junhyeong.chatchat.repositories.CompanyRepository;
+import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,14 +17,15 @@ public class EditCompanyService {
     }
 
     @Transactional
-    public void edit(UserName userName, EditCompanyRequest editCompanyRequest) {
+    public void edit(Username userName, EditCompanyRequest editCompanyRequest) {
         Company company = companyRepository.findByUserName(userName)
                 .orElseThrow(CompanyNotFound::new);
 
         company.edit(
                 editCompanyRequest.getName(),
                 editCompanyRequest.getDescription(),
-                editCompanyRequest.getProfileImage()
+                editCompanyRequest.getProfileImage(),
+                editCompanyRequest.getProfileVisibility()
         );
     }
 }

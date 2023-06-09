@@ -5,7 +5,7 @@ import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Image;
 import com.junhyeong.chatchat.models.commom.Name;
 import com.junhyeong.chatchat.models.commom.Password;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +14,8 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
@@ -25,7 +27,7 @@ public class Company {
     private Long id;
 
     @Embedded
-    private UserName userName;
+    private Username userName;
 
     @Embedded
     private Password password;
@@ -40,6 +42,9 @@ public class Company {
     @AttributeOverride(name = "value", column = @Column(name = "profile_image"))
     private Image profileImage;
 
+    @Enumerated(EnumType.STRING)
+    private ProfileVisibility profileVisibility;
+
     @CreationTimestamp
     private LocalDateTime registeredAt;
 
@@ -49,24 +54,31 @@ public class Company {
     public Company() {
     }
 
-    public Company(Long id, UserName userName, Name name,
+    public Company(Long id, Username userName, Name name,
                    Description description, Image profileImage) {
         this.id = id;
         this.userName = userName;
         this.name = name;
         this.description = description;
         this.profileImage = profileImage;
+        this.profileVisibility = ProfileVisibility.HIDDEN;
     }
 
-    public Company(UserName userName, Name name,
+    public Company(Username userName, Name name,
                    Description description, Image profileImage) {
         this.userName = userName;
         this.name = name;
         this.description = description;
         this.profileImage = profileImage;
+        this.profileVisibility = ProfileVisibility.HIDDEN;
     }
 
-    public static Company fake(UserName userName) {
+    public Company(Username userName, Name name) {
+        this.userName = userName;
+        this.name = name;
+    }
+
+    public static Company fake(Username userName) {
         return new Company(
                 1L,
                 userName,
@@ -75,7 +87,7 @@ public class Company {
                 new Image("이미지"));
     }
 
-    public static Company fake(UserName userName, Name name) {
+    public static Company fake(Username userName, Name name) {
         return new Company(
                 1L,
                 userName,
@@ -102,7 +114,7 @@ public class Company {
         return id;
     }
 
-    public UserName userName() {
+    public Username userName() {
         return userName;
     }
 
@@ -130,9 +142,10 @@ public class Company {
         return updatedAt;
     }
 
-    public void edit(Name name, Description description, Image profileImage) {
+    public void edit(Name name, Description description, Image profileImage, ProfileVisibility profileVisibility) {
         this.name = name;
         this.description = description;
         this.profileImage = profileImage;
+        this.profileVisibility = profileVisibility;
     }
 }

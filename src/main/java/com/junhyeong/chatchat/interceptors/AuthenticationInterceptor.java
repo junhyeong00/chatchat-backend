@@ -2,7 +2,7 @@ package com.junhyeong.chatchat.interceptors;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.junhyeong.chatchat.exceptions.AuthenticationError;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.utils.JwtUtil;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -29,9 +29,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         String accessToken = authorization.substring("Bearer ".length());
 
         try {
-            UserName userName = jwtUtil.decode(accessToken);
+            Username username = jwtUtil.decode(accessToken);
 
-            request.setAttribute("userName", userName);
+            request.setAttribute("username", username);
 
             return true;
         } catch (JWTDecodeException exception) {

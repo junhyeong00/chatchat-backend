@@ -6,19 +6,19 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class UserName implements Serializable {
+public class Username implements Serializable {
     @Column(name = "user_name")
     private String value;
 
-    public UserName() {
+    public Username() {
     }
 
-    public UserName(String value) {
+    public Username(String value) {
         this.value = value;
     }
 
-    public static UserName of(String userName) {
-        return new UserName(userName);
+    public static Username of(String userName) {
+        return new Username(userName);
     }
 
     public String value() {
@@ -27,13 +27,13 @@ public class UserName implements Serializable {
 
     @Override
     public String toString() {
-        return "UserName(" + value + ")";
+        return "Username(" + value + ")";
     }
 
     @Override
     public boolean equals(Object other) {
         return other != null &&
-                other.getClass() == UserName.class &&
-                Objects.equals(this.value, ((UserName) other).value);
+                other.getClass() == Username.class &&
+                Objects.equals(this.value, ((Username) other).value);
     }
 }

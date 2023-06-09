@@ -1,7 +1,7 @@
 package com.junhyeong.chatchat.utils;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,7 @@ class JwtUtilTest {
 
     @Test
     void encodeAndDecode() {
-        UserName userName = new UserName("test123");
+        Username userName = new Username("test123");
 
         String token = jwtUtil.encode(userName);
 

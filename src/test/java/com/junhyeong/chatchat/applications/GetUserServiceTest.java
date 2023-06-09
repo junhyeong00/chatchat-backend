@@ -1,10 +1,10 @@
 package com.junhyeong.chatchat.applications;
 
-import com.junhyeong.chatchat.applications.user.GetUserService;
+import com.junhyeong.chatchat.applications.customer.GetUserService;
 import com.junhyeong.chatchat.exceptions.UserNotFound;
-import com.junhyeong.chatchat.models.user.User;
-import com.junhyeong.chatchat.models.commom.UserName;
-import com.junhyeong.chatchat.repositories.UserRepository;
+import com.junhyeong.chatchat.models.customer.Customer;
+import com.junhyeong.chatchat.models.commom.Username;
+import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,28 +15,28 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 class GetUserServiceTest {
-    private UserRepository userRepository;
+    private CustomerRepository userRepository;
     private GetUserService getUserService;
 
     @BeforeEach
     void setup() {
-        userRepository = mock(UserRepository.class);
+        userRepository = mock(CustomerRepository.class);
         getUserService = new GetUserService(userRepository);
     }
 
     @Test
     void whenUserExists() {
-        UserName userName = new UserName("test123");
+        Username userName = new Username("test123");
 
         given(userRepository.findByUserName(userName))
-                .willReturn(Optional.of(User.fake(userName)));
+                .willReturn(Optional.of(Customer.fake(userName)));
 
         assertDoesNotThrow(() -> getUserService.find(userName));
     }
 
     @Test
     void whenUserNotExists() {
-        UserName userName = new UserName("notExists@gmail.com");
+        Username userName = new Username("notExists@gmail.com");
 
         given(userRepository.findByUserName(userName))
                 .willReturn(Optional.empty());

@@ -1,4 +1,4 @@
-package com.junhyeong.chatchat.models.user;
+package com.junhyeong.chatchat.models.customer;
 
 import com.junhyeong.chatchat.models.commom.Password;
 import org.junit.jupiter.api.Test;
@@ -13,10 +13,10 @@ class UserTest {
         PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
         Password password = new Password("Password1234!");
 
-        User user = new User();
+        Customer customer = new Customer();
 
-        user.changePassword(password, passwordEncoder);
+        customer.changePassword(password, passwordEncoder);
 
-        assertDoesNotThrow(() -> user.authenticate(password, passwordEncoder));
+        assertDoesNotThrow(() -> customer.authenticate(password, passwordEncoder));
     }
 }

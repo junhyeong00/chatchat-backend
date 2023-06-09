@@ -7,7 +7,7 @@ import com.junhyeong.chatchat.dtos.EditCompanyRequest;
 import com.junhyeong.chatchat.dtos.EditCompanyRequestDto;
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
 import com.junhyeong.chatchat.exceptions.EditCompanyFailed;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -34,9 +34,9 @@ public class CompanyController {
 
     @GetMapping("me")
     public CompanyProfileDto companyProfile(
-            @RequestAttribute UserName userName
+            @RequestAttribute Username username
     ) {
-        Company company = getCompanyProfileService.find(userName);
+        Company company = getCompanyProfileService.find(username);
 
         return company.toProfileDto();
     }
@@ -44,13 +44,13 @@ public class CompanyController {
     @PatchMapping("me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void edit(
-            @RequestAttribute UserName userName,
+            @RequestAttribute Username username,
             @Validated @RequestBody EditCompanyRequestDto editCompanyRequestDto
     ) {
         try {
             EditCompanyRequest editCompanyRequest = EditCompanyRequest.of(editCompanyRequestDto);
 
-            editCompanyService.edit(userName, editCompanyRequest);
+            editCompanyService.edit(username, editCompanyRequest);
         } catch (CompanyNotFound e) {
             throw new CompanyNotFound();
         } catch (Exception e) {

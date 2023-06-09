@@ -1,9 +1,9 @@
 package com.junhyeong.chatchat.applications.company;
 
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
-import com.junhyeong.chatchat.repositories.CompanyRepository;
+import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +25,7 @@ class GetCompanyProfileServiceTest {
 
     @Test
     void find() {
-        UserName userName = new UserName("company123");
+        Username userName = new Username("company123");
 
         given(companyRepository.findByUserName(userName))
                 .willReturn(Optional.of(Company.fake(userName)));
@@ -35,7 +35,7 @@ class GetCompanyProfileServiceTest {
 
     @Test
     void findWithCompanyNotFound() {
-        UserName invalidUserName = new UserName("xxx");
+        Username invalidUserName = new Username("xxx");
 
         given(companyRepository.findByUserName(invalidUserName))
                 .willThrow(CompanyNotFound.class);

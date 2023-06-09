@@ -5,6 +5,11 @@
 
 <br>
 
+### API 설계 
+- https://chatchat.gitbook.io/api/
+
+<br>
+
 ## 기술 스택
 ### Backend
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"></a>

@@ -4,7 +4,7 @@ import com.junhyeong.chatchat.applications.login.LoginService;
 import com.junhyeong.chatchat.dtos.TokenDto;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Password;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +31,10 @@ class SessionControllerTest {
 
     @BeforeEach
     void setup() {
-        UserName userName = new UserName("test123");
+        Username userName = new Username("test123");
         Password password = new Password("Password1234!");
 
-        UserName wrongUserName = new UserName("wrong123");
+        Username wrongUserName = new Username("wrong123");
         Password wrongPassword = new Password("notPassword1234!");
 
         given(loginService.login(userName, password))
@@ -52,7 +52,7 @@ class SessionControllerTest {
 
     @Test
     void loginSuccess() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/session")
+        mockMvc.perform(MockMvcRequestBuilders.post("/company/session")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"userName\": \"test123\", " +
@@ -66,7 +66,7 @@ class SessionControllerTest {
 
     @Test
     void loginFail() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/session")
+        mockMvc.perform(MockMvcRequestBuilders.post("/company/session")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"userName\": \"wrong123\", " +
@@ -77,7 +77,7 @@ class SessionControllerTest {
 
     @Test
     void whenPasswordIsInvalid() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/session")
+        mockMvc.perform(MockMvcRequestBuilders.post("/company/session")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"userName\":\"test123\", " +
@@ -88,7 +88,7 @@ class SessionControllerTest {
 
     @Test
     void whenUsernameIsInvalid() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/session")
+        mockMvc.perform(MockMvcRequestBuilders.post("/company/session")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"userName\":\"wrong123\", " +
@@ -99,7 +99,7 @@ class SessionControllerTest {
 
     @Test
     void whenUserNameIsBlank() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/session")
+        mockMvc.perform(MockMvcRequestBuilders.post("/company/session")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"userName\":\"\", " +
@@ -110,7 +110,7 @@ class SessionControllerTest {
 
     @Test
     void whenPasswordIsBlank() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/session")
+        mockMvc.perform(MockMvcRequestBuilders.post("/company/session")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"userName\":\"test123\", " +

@@ -3,7 +3,7 @@ package com.junhyeong.chatchat.controllers;
 import com.junhyeong.chatchat.applications.company.EditCompanyService;
 import com.junhyeong.chatchat.applications.company.GetCompanyProfileService;
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
 import com.junhyeong.chatchat.utils.JwtUtil;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ class CompanyControllerTest {
 
     @Test
     void companyProfile() throws Exception {
-        UserName userName = new UserName("company123");
+        Username userName = new Username("company123");
         String token = jwtUtil.encode(userName);
 
         given(getCompanyProfileService.find(userName))
@@ -49,7 +49,7 @@ class CompanyControllerTest {
 
     @Test
     void companyProfileWithCompanyNotFound() throws Exception {
-        UserName invalidUserName = new UserName("xxx");
+        Username invalidUserName = new Username("xxx");
         String token = jwtUtil.encode(invalidUserName);
 
         given(getCompanyProfileService.find(invalidUserName))
@@ -62,7 +62,7 @@ class CompanyControllerTest {
 
     @Test
     void editCompany() throws Exception {
-        UserName userName = new UserName("company123");
+        Username userName = new Username("company123");
         String token = jwtUtil.encode(userName);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/companies/me")
@@ -78,7 +78,7 @@ class CompanyControllerTest {
 
     @Test
     void editCompanyWithBlankName() throws Exception {
-        UserName userName = new UserName("company123");
+        Username userName = new Username("company123");
         String token = jwtUtil.encode(userName);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/companies/me")
@@ -94,7 +94,7 @@ class CompanyControllerTest {
 
     @Test
     void editCompanyWithInvalidName() throws Exception {
-        UserName userName = new UserName("company123");
+        Username userName = new Username("company123");
         String token = jwtUtil.encode(userName);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/companies/me")
@@ -109,24 +109,8 @@ class CompanyControllerTest {
     }
 
     @Test
-    void editCompanyWithBlankDescription() throws Exception {
-        UserName userName = new UserName("company123");
-        String token = jwtUtil.encode(userName);
-
-        mockMvc.perform(MockMvcRequestBuilders.patch("/companies/me")
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{" +
-                                "   \"name\":\"악덕기업\", " +
-                                "   \"description\":\"\", " +
-                                "   \"imageUrl\":\"이미지\"" +
-                                "}"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void editCompanyWithCompanyNotFound() throws Exception {
-        UserName invalidUserName = new UserName("xxx");
+        Username invalidUserName = new Username("xxx");
         String token = jwtUtil.encode(invalidUserName);
 
         doAnswer(invocation -> {

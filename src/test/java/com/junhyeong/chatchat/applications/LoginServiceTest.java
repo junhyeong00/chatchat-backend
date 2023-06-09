@@ -2,13 +2,13 @@ package com.junhyeong.chatchat.applications;
 
 import com.junhyeong.chatchat.applications.login.LoginService;
 import com.junhyeong.chatchat.applications.token.IssueTokenService;
-import com.junhyeong.chatchat.applications.user.GetUserService;
+import com.junhyeong.chatchat.applications.customer.GetUserService;
 import com.junhyeong.chatchat.dtos.TokenDto;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.exceptions.UserNotFound;
 import com.junhyeong.chatchat.models.commom.Password;
-import com.junhyeong.chatchat.models.user.User;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
+import com.junhyeong.chatchat.models.customer.Customer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
@@ -37,18 +37,18 @@ class LoginServiceTest {
 
     @Test
     void loginSuccess() {
-        UserName userName = new UserName("test123");
+        Username userName = new Username("test123");
         Password password = new Password("Password1234!");
 
-        User user = User.fake(userName);
+        Customer customer = Customer.fake(userName);
 
-        user.changePassword(password, passwordEncoder);
+        customer.changePassword(password, passwordEncoder);
 
         given(issueTokenService.issue(userName))
                 .willReturn(TokenDto.fake());
 
         given(getUserService.find(userName))
-                .willReturn(user);
+                .willReturn(customer);
 
         TokenDto token = loginService.login(userName, password);
 
@@ -57,7 +57,7 @@ class LoginServiceTest {
 
     @Test
     void loginWithWrongUserName() {
-        UserName userName = new UserName("notTest123");
+        Username userName = new Username("notTest123");
         Password password = new Password("Password1234!");
 
         given(getUserService.find(userName))
@@ -68,15 +68,15 @@ class LoginServiceTest {
 
     @Test
     void loginWithWrongPassword() {
-        UserName userName = new UserName("test123");
+        Username userName = new Username("test123");
         Password password = new Password("Password1234!");
         Password wrongPassword = new Password("notPassword1234!");
 
-        User user = User.fake(userName);
+        Customer customer = Customer.fake(userName);
 
-        user.changePassword(password, passwordEncoder);
+        customer.changePassword(password, passwordEncoder);
 
-        given(getUserService.find(userName)).willReturn(user);
+        given(getUserService.find(userName)).willReturn(customer);
 
         assertThrows(LoginFailed.class,
                 () -> loginService.login(userName, wrongPassword));

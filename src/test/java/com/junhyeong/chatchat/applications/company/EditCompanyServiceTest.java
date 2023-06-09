@@ -3,9 +3,9 @@ package com.junhyeong.chatchat.applications.company;
 import com.junhyeong.chatchat.dtos.EditCompanyRequest;
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
 import com.junhyeong.chatchat.models.commom.Name;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
-import com.junhyeong.chatchat.repositories.CompanyRepository;
+import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +27,7 @@ class EditCompanyServiceTest {
 
     @Test
     void edit() {
-        UserName userName = new UserName("company123");
+        Username userName = new Username("company123");
 
         EditCompanyRequest editCompanyRequest = EditCompanyRequest.fake(new Name("악덕기업"));
 
@@ -39,7 +39,7 @@ class EditCompanyServiceTest {
 
     @Test
     void editWithCompanyNotFound() {
-        UserName invalidUserName = new UserName("xxx");
+        Username invalidUserName = new Username("xxx");
 
         EditCompanyRequest editCompanyRequest = EditCompanyRequest.fake(new Name("악덕기업"));
 

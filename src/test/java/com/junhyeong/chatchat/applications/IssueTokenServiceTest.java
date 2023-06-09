@@ -3,9 +3,9 @@ package com.junhyeong.chatchat.applications;
 import com.junhyeong.chatchat.applications.token.IssueTokenService;
 import com.junhyeong.chatchat.dtos.TokenDto;
 import com.junhyeong.chatchat.exceptions.RefreshTokenNotFound;
+import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.token.Token;
-import com.junhyeong.chatchat.models.commom.UserName;
-import com.junhyeong.chatchat.repositories.RefreshTokenRepository;
+import com.junhyeong.chatchat.repositories.token.RefreshTokenRepository;
 import com.junhyeong.chatchat.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class IssueTokenServiceTest {
 
     @Test
     void issue() {
-        UserName userName = new UserName("test123");
+        Username userName = new Username("test123");
 
         TokenDto tokenDto = issueTokenService.issue(userName);
 
@@ -46,7 +46,7 @@ class IssueTokenServiceTest {
 
     @Test
     void whenReissueSuccess() {
-        UserName userName = new UserName("test123");
+        Username userName = new Username("test123");
 
         String token = jwtUtil.encode(UUID.randomUUID());
 

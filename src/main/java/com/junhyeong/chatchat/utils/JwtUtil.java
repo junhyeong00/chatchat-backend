@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
 
 import java.util.Date;
 import java.util.UUID;
@@ -18,7 +18,7 @@ public class JwtUtil {
         this.algorithm = Algorithm.HMAC256(secret);
     }
 
-    public String encode(UserName userName) {
+    public String encode(Username userName) {
         return JWT.create()
                 .withClaim("userName", userName.value())
                 .withIssuedAt(new Date())
@@ -34,14 +34,14 @@ public class JwtUtil {
                 .sign(algorithm);
     }
 
-    public UserName decode(String token) {
+    public Username decode(String token) {
         JWTVerifier verifier = JWT.require(algorithm).build();
 
         DecodedJWT verify = verifier.verify(token);
 
         String value = verify.getClaim("userName").asString();
 
-        return new UserName(value);
+        return new Username(value);
     }
 
     public String decodeRefreshToken(String token) {

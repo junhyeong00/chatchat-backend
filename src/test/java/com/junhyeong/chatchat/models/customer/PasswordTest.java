@@ -1,4 +1,4 @@
-package com.junhyeong.chatchat.models.user;
+package com.junhyeong.chatchat.models.customer;
 
 import com.junhyeong.chatchat.exceptions.InvalidPassword;
 import com.junhyeong.chatchat.models.commom.Password;

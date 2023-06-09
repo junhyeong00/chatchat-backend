@@ -1,9 +1,9 @@
 package com.junhyeong.chatchat.applications.company;
 
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
-import com.junhyeong.chatchat.repositories.CompanyRepository;
+import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +16,7 @@ public class GetCompanyProfileService {
     }
 
     @Transactional(readOnly = true)
-    public Company find(UserName userName) {
+    public Company find(Username userName) {
         return companyRepository.findByUserName(userName)
                 .orElseThrow(CompanyNotFound::new);
     }

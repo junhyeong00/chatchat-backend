@@ -1,12 +1,12 @@
 package com.junhyeong.chatchat.applications.login;
 
-import com.junhyeong.chatchat.applications.user.GetUserService;
+import com.junhyeong.chatchat.applications.customer.GetUserService;
 import com.junhyeong.chatchat.applications.token.IssueTokenService;
 import com.junhyeong.chatchat.dtos.TokenDto;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Password;
-import com.junhyeong.chatchat.models.user.User;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
+import com.junhyeong.chatchat.models.customer.Customer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,11 +26,11 @@ public class LoginService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public TokenDto login(UserName userName, Password password) {
+    public TokenDto login(Username userName, Password password) {
         try {
-            User user = getUserService.find(userName);
+            Customer customer = getUserService.find(userName);
 
-            user.authenticate(password, passwordEncoder);
+            customer.authenticate(password, passwordEncoder);
 
             TokenDto tokenDto = issueTokenService.issue(userName);
 

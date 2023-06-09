@@ -6,7 +6,7 @@ import com.junhyeong.chatchat.dtos.LoginResultDto;
 import com.junhyeong.chatchat.dtos.TokenDto;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Password;
-import com.junhyeong.chatchat.models.commom.UserName;
+import com.junhyeong.chatchat.models.commom.Username;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("session")
+@RequestMapping("company/session")
 public class SessionController {
     private final LoginService loginService;
 
@@ -36,10 +36,10 @@ public class SessionController {
             @Valid @RequestBody LoginRequestDto loginRequestDto
     ) {
         try {
-        UserName userName = UserName.of(loginRequestDto.userName());
-        Password password = Password.of(loginRequestDto.password());
+            Username userName = Username.of(loginRequestDto.userName());
+            Password password = Password.of(loginRequestDto.password());
 
-        TokenDto token = loginService.login(userName, password);
+            TokenDto token = loginService.login(userName, password);
 
             ResponseCookie cookie = ResponseCookie.from("refreshToken", token.refreshToken())
                     .httpOnly(true)
@@ -50,10 +50,10 @@ public class SessionController {
 
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-        return new LoginResultDto(token.accessToken());
-    } catch (Exception exception) {
-        throw new LoginFailed();
-    }
+            return new LoginResultDto(token.accessToken());
+        } catch (Exception exception) {
+            throw new LoginFailed();
+        }
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

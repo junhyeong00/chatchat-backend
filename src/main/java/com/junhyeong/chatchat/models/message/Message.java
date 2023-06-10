@@ -1,5 +1,6 @@
 package com.junhyeong.chatchat.models.message;
 
+import com.junhyeong.chatchat.dtos.MessageDto;
 import com.junhyeong.chatchat.models.commom.Username;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -18,9 +19,12 @@ public class Message {
 
     private Long chatroomId;
 
-    private Username writer;
+    private Username sender;
 
     private Content content;
+
+    @Enumerated(EnumType.STRING)
+    private MessageType type;
 
     @Enumerated(EnumType.STRING)
     private ReadStatus readStatus;
@@ -31,11 +35,32 @@ public class Message {
     public Message() {
     }
 
-    public Message(Long chatroomId, Username writer, Content content) {
+    public Message(Long id, Long chatroomId, Username sender,
+                   Content content, MessageType type, ReadStatus readStatus) {
+        this.id = id;
         this.chatroomId = chatroomId;
-        this.writer = writer;
+        this.sender = sender;
         this.content = content;
+        this.type = type;
+        this.readStatus = readStatus;
+    }
+
+    public Message(Long chatroomId, Username sender, Content content, MessageType type) {
+        this.chatroomId = chatroomId;
+        this.sender = sender;
+        this.content = content;
+        this.type = type;
         this.readStatus = readStatus.UNREAD;
+    }
+
+    public static Message fake(Username username, Content content) {
+        return new Message(
+                1L, 1L,
+                username,
+                content,
+                MessageType.GENERAL,
+                ReadStatus.UNREAD
+        );
     }
 
     public Long id() {
@@ -46,8 +71,8 @@ public class Message {
         return chatroomId;
     }
 
-    public Username writer() {
-        return writer;
+    public Username sender() {
+        return sender;
     }
 
     public Content content() {
@@ -58,11 +83,25 @@ public class Message {
         return readStatus;
     }
 
+    public MessageType type() {
+        return type;
+    }
+
     public LocalDateTime createdAt() {
         return createdAt;
     }
 
-    public void setRead() {
+    public void read() {
         this.readStatus = ReadStatus.READ;
+    }
+
+    public MessageDto toDto(Long userId) {
+        return new MessageDto(
+                this.id,
+                userId,
+                this.sender.value(),
+                this.content.value(),
+                this.createdAt
+        );
     }
 }

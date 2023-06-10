@@ -8,6 +8,7 @@ import com.junhyeong.chatchat.models.company.Company;
 import com.junhyeong.chatchat.models.customer.Customer;
 import com.junhyeong.chatchat.models.message.Content;
 import com.junhyeong.chatchat.models.message.Message;
+import com.junhyeong.chatchat.models.message.MessageType;
 import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
 import com.junhyeong.chatchat.repositories.message.MessageRepository;
@@ -70,17 +71,17 @@ class ChatRoomRepositoryImplTest {
         Message message1 = new Message(
                 savedChatRoom1.id(),
                 customer1.userName(),
-                new Content("내용1")
-        );
-        message1.setRead();
+                new Content("내용1"),
+                MessageType.GENERAL);
+        message1.read();
         messageRepository.save(message1);
 
         Message message2 = new Message(
                 savedChatRoom1.id(),
                 company1.userName(),
-                new Content("내용2")
-        );
-        message2.setRead();
+                new Content("내용2"),
+                MessageType.GENERAL);
+        message2.read();
         messageRepository.save(message2);
 
         ChatRoom chatRoom2 = new ChatRoom(
@@ -92,23 +93,23 @@ class ChatRoomRepositoryImplTest {
         Message message3 = new Message(
                 savedChatRoom2.id(),
                 company1.userName(),
-                new Content("내용3")
-        );
-        message3.setRead();
+                new Content("내용3"),
+                MessageType.GENERAL);
+        message3.read();
         messageRepository.save(message3);
 
         Message message4 = new Message(
                 savedChatRoom2.id(),
                 customer2.userName(),
-                new Content("내용4")
-        );
+                new Content("내용4"),
+                MessageType.GENERAL);
         messageRepository.save(message4);
 
         Message message5 = new Message(
                 savedChatRoom2.id(),
                 customer2.userName(),
-                new Content("내용5")
-        );
+                new Content("내용5"),
+                MessageType.GENERAL);
         messageRepository.save(message5);
     }
 

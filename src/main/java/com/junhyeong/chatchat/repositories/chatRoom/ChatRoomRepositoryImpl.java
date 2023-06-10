@@ -6,6 +6,7 @@ import com.junhyeong.chatchat.models.chatRoom.QChatRoom;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.customer.QCustomer;
 import com.junhyeong.chatchat.models.message.Message;
+import com.junhyeong.chatchat.models.message.MessageType;
 import com.junhyeong.chatchat.models.message.QMessage;
 import com.junhyeong.chatchat.models.message.ReadStatus;
 import com.querydsl.core.types.ExpressionUtils;
@@ -58,6 +59,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                 .on(chatRoom.id.eq(message.chatroomId))
                 .leftJoin(customer)
                 .on(chatRoom.customer.eq(customer.userName))
+                .where(message.type.eq(MessageType.GENERAL))
                 .groupBy(chatRoom.id, customer.name, customer.profileImage,
                          message.content, message.createdAt)
                 .having(message.createdAt.eq(

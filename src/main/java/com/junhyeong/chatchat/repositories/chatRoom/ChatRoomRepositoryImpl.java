@@ -1,19 +1,15 @@
 package com.junhyeong.chatchat.repositories.chatRoom;
 
 import com.junhyeong.chatchat.dtos.ChatRoomDto;
-import com.junhyeong.chatchat.models.chatRoom.ChatRoom;
 import com.junhyeong.chatchat.models.chatRoom.QChatRoom;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.customer.QCustomer;
-import com.junhyeong.chatchat.models.message.Message;
 import com.junhyeong.chatchat.models.message.MessageType;
 import com.junhyeong.chatchat.models.message.QMessage;
 import com.junhyeong.chatchat.models.message.ReadStatus;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;

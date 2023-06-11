@@ -27,7 +27,7 @@ public class Company {
     private Long id;
 
     @Embedded
-    private Username userName;
+    private Username username;
 
     @Embedded
     private Password password;
@@ -54,43 +54,43 @@ public class Company {
     public Company() {
     }
 
-    public Company(Long id, Username userName, Name name,
+    public Company(Long id, Username username, Name name,
                    Description description, Image profileImage) {
         this.id = id;
-        this.userName = userName;
+        this.username = username;
         this.name = name;
         this.description = description;
         this.profileImage = profileImage;
         this.profileVisibility = ProfileVisibility.HIDDEN;
     }
 
-    public Company(Username userName, Name name,
+    public Company(Username username, Name name,
                    Description description, Image profileImage) {
-        this.userName = userName;
+        this.username = username;
         this.name = name;
         this.description = description;
         this.profileImage = profileImage;
         this.profileVisibility = ProfileVisibility.HIDDEN;
     }
 
-    public Company(Username userName, Name name) {
-        this.userName = userName;
+    public Company(Username username, Name name) {
+        this.username = username;
         this.name = name;
     }
 
-    public static Company fake(Username userName) {
+    public static Company fake(Username username) {
         return new Company(
                 1L,
-                userName,
+                username,
                 new Name("악덕기업"),
                 new Description("악덕기업입니다"),
                 new Image("이미지"));
     }
 
-    public static Company fake(Username userName, Name name) {
+    public static Company fake(Username username, Name name) {
         return new Company(
                 1L,
-                userName,
+                username,
                 name,
                 new Description("악덕기업입니다"),
                 new Image("이미지"));
@@ -107,15 +107,17 @@ public class Company {
     }
 
     public CompanyProfileDto toProfileDto() {
-        return new CompanyProfileDto(id, name.value(), description.value(), profileImage.value());
+        return new CompanyProfileDto(id, name.value(),
+                description.value(), profileImage.value(),
+                profileVisibility.equals(ProfileVisibility.VISIBLE));
     }
 
     public Long id() {
         return id;
     }
 
-    public Username userName() {
-        return userName;
+    public Username username() {
+        return username;
     }
 
     public Password password() {

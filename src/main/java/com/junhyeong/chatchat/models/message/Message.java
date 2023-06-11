@@ -10,6 +10,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class Message {
@@ -17,9 +18,9 @@ public class Message {
     @GeneratedValue
     private Long id;
 
-    private Long chatroomId;
+    private Long chatRoomId;
 
-    private Username sender;
+    private Sender sender;
 
     private Content content;
 
@@ -35,18 +36,19 @@ public class Message {
     public Message() {
     }
 
-    public Message(Long id, Long chatroomId, Username sender,
+    public Message(Long id, Long chatroomId, Sender sender,
                    Content content, MessageType type, ReadStatus readStatus) {
         this.id = id;
-        this.chatroomId = chatroomId;
+        this.chatRoomId = chatroomId;
         this.sender = sender;
         this.content = content;
         this.type = type;
         this.readStatus = readStatus;
+        this.createdAt = LocalDateTime.now();
     }
 
-    public Message(Long chatroomId, Username sender, Content content, MessageType type) {
-        this.chatroomId = chatroomId;
+    public Message(Long chatroomId, Sender sender, Content content, MessageType type) {
+        this.chatRoomId = chatroomId;
         this.sender = sender;
         this.content = content;
         this.type = type;
@@ -56,7 +58,7 @@ public class Message {
     public static Message fake(Username username, Content content) {
         return new Message(
                 1L, 1L,
-                username,
+                new Sender(1L, username),
                 content,
                 MessageType.GENERAL,
                 ReadStatus.UNREAD
@@ -67,11 +69,11 @@ public class Message {
         return id;
     }
 
-    public Long chatroomId() {
-        return chatroomId;
+    public Long chatRoomId() {
+        return chatRoomId;
     }
 
-    public Username sender() {
+    public Sender sender() {
         return sender;
     }
 
@@ -95,13 +97,20 @@ public class Message {
         this.readStatus = ReadStatus.READ;
     }
 
-    public MessageDto toDto(Long userId) {
+    public MessageDto toDto() {
         return new MessageDto(
                 this.id,
-                userId,
-                this.sender.value(),
+                this.sender.id(),
                 this.content.value(),
                 this.createdAt
         );
+    }
+
+    public boolean isSender(Username username) {
+        return Objects.equals(this.sender.username(), username);
+    }
+
+    public boolean isRead() {
+        return Objects.equals(this.readStatus, ReadStatus.READ);
     }
 }

@@ -1,5 +1,7 @@
 package com.junhyeong.chatchat.models.customer;
 
+import com.junhyeong.chatchat.dtos.ChatRoomDetailDto;
+import com.junhyeong.chatchat.dtos.MessageDto;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Image;
 import com.junhyeong.chatchat.models.commom.Name;
@@ -16,6 +18,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Customer {
@@ -23,7 +26,7 @@ public class Customer {
     @GeneratedValue
     private Long id;
 
-    private Username userName;
+    private Username username;
 
     private Password password;
 
@@ -44,20 +47,20 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(Long id, Username userName, Name name) {
+    public Customer(Long id, Username username, Name name) {
         this.id = id;
-        this.userName = userName;
+        this.username = username;
         this.name = name;
     }
 
-    public Customer(Username userName, Name name) {
-        this.userName = userName;
+    public Customer(Username username, Name name) {
+        this.username = username;
         this.name = name;
         this.profileImage = new Image("기본이미지");
     }
 
-    public static Customer fake(Username userName) {
-        return new Customer(userName,
+    public static Customer fake(Username username) {
+        return new Customer(username,
                 new Name("테스터"));
     }
 
@@ -75,8 +78,8 @@ public class Customer {
         return id;
     }
 
-    public Username userName() {
-        return userName;
+    public Username username() {
+        return username;
     }
 
     public Password password() {
@@ -93,5 +96,15 @@ public class Customer {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public ChatRoomDetailDto toRoomDetailDto(Long chatRoomId, List<MessageDto> messages) {
+        return new ChatRoomDetailDto(
+                chatRoomId,
+                this.id,
+                this.name.value(),
+                this.profileImage.value(),
+                messages
+        );
     }
 }

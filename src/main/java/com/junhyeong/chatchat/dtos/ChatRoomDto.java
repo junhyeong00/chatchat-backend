@@ -5,6 +5,7 @@ import com.junhyeong.chatchat.models.commom.Name;
 import com.junhyeong.chatchat.models.message.Content;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ChatRoomDto {
     private Long id;
@@ -21,7 +22,7 @@ public class ChatRoomDto {
         this.receiverName = receiverName.value();
         this.receiverImageUrl = receiverImageUrl.value();
         this.lastMessage = lastMessage.value();
-        this.lastMessageDate = lastMessageDate.toString();
+        this.lastMessageDate = lastMessageDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
         this.unreadMessageCount = unreadMessageCount;
     }
 

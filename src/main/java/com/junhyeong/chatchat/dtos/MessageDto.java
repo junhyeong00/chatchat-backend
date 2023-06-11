@@ -1,39 +1,34 @@
 package com.junhyeong.chatchat.dtos;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class MessageDto {
     private Long id;
-    private Long userId;
-    private String sender;
+    private Long senderId;
     private String content;
-    private LocalDateTime createdAt;
+    private String createdAt;
 
-    public MessageDto(Long id, Long userId, String sender, String content, LocalDateTime createdAt) {
+    public MessageDto(Long id, Long senderId,  String content, LocalDateTime createdAt) {
         this.id = id;
-        this.userId = userId;
-        this.sender = sender;
+        this.senderId = senderId;
         this.content = content;
-        this.createdAt = createdAt;
+        this.createdAt = createdAt.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public String getSender() {
-        return sender;
+    public Long getSenderId() {
+        return senderId;
     }
 
     public String getContent() {
         return content;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 }

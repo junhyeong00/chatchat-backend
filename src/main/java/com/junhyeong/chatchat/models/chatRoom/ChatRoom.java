@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
 public class ChatRoom {
@@ -31,6 +32,20 @@ public class ChatRoom {
     public ChatRoom(Username customer, Username company) {
         this.customer = customer;
         this.company = company;
+    }
+
+    public ChatRoom(Long id, Username customer, Username company) {
+        this.id = id;
+        this.customer = customer;
+        this.company = company;
+    }
+
+    public static ChatRoom fake(Long chatRoomId) {
+        return new ChatRoom(
+                chatRoomId,
+                new Username("customer"),
+                new Username("company")
+        );
     }
 
     public Long id() {

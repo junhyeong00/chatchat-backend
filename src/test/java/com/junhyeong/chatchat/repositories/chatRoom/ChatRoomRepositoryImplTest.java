@@ -9,6 +9,7 @@ import com.junhyeong.chatchat.models.customer.Customer;
 import com.junhyeong.chatchat.models.message.Content;
 import com.junhyeong.chatchat.models.message.Message;
 import com.junhyeong.chatchat.models.message.MessageType;
+import com.junhyeong.chatchat.models.message.Sender;
 import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
 import com.junhyeong.chatchat.repositories.message.MessageRepository;
@@ -49,28 +50,28 @@ class ChatRoomRepositoryImplTest {
                 new Username("company1"),
                 new Name("기업1")
         );
-        companyRepository.save(company1);
+        Company savedCompany1 = companyRepository.save(company1);
 
         Customer customer1 = new Customer(
                 new Username("customer1"),
                 new Name("고객1")
         );
-        customerRepository.save(customer1);
+        Customer savedCustomer1 = customerRepository.save(customer1);
         Customer customer2 = new Customer(
                 new Username("customer2"),
                 new Name("고객2")
         );
-        customerRepository.save(customer2);
+        Customer savedCustomer2 = customerRepository.save(customer2);
 
         ChatRoom chatRoom1 = new ChatRoom(
-                customer1.userName(),
-                company1.userName()
+                customer1.username(),
+                company1.username()
         );
         ChatRoom savedChatRoom1 = chatRoomRepository.save(chatRoom1);
 
         Message message1 = new Message(
                 savedChatRoom1.id(),
-                customer1.userName(),
+                new Sender(savedCustomer1.id(), customer1.username()),
                 new Content("내용1"),
                 MessageType.GENERAL);
         message1.read();
@@ -78,21 +79,21 @@ class ChatRoomRepositoryImplTest {
 
         Message message2 = new Message(
                 savedChatRoom1.id(),
-                company1.userName(),
+                new Sender(savedCustomer1.id(), customer1.username()),
                 new Content("내용2"),
                 MessageType.GENERAL);
         message2.read();
         messageRepository.save(message2);
 
         ChatRoom chatRoom2 = new ChatRoom(
-                customer2.userName(),
-                company1.userName()
+                customer2.username(),
+                company1.username()
         );
         ChatRoom savedChatRoom2 = chatRoomRepository.save(chatRoom2);
 
         Message message3 = new Message(
                 savedChatRoom2.id(),
-                company1.userName(),
+                new Sender(savedCompany1.id(), company1.username()),
                 new Content("내용3"),
                 MessageType.GENERAL);
         message3.read();
@@ -100,14 +101,14 @@ class ChatRoomRepositoryImplTest {
 
         Message message4 = new Message(
                 savedChatRoom2.id(),
-                customer2.userName(),
+                new Sender(savedCustomer2.id(), customer2.username()),
                 new Content("내용4"),
                 MessageType.GENERAL);
         messageRepository.save(message4);
 
         Message message5 = new Message(
                 savedChatRoom2.id(),
-                customer2.userName(),
+                new Sender(savedCustomer2.id(), customer2.username()),
                 new Content("내용5"),
                 MessageType.GENERAL);
         messageRepository.save(message5);
@@ -116,7 +117,7 @@ class ChatRoomRepositoryImplTest {
     @Test
     void findAllByCompany() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<ChatRoomDto> chatRooms = chatRoomRepository.findAllDtoByCompany(company1.userName(), pageable);
+        Page<ChatRoomDto> chatRooms = chatRoomRepository.findAllDtoByCompany(company1.username(), pageable);
 
         assertThat(chatRooms.get().toList().get(0).getUnreadMessageCount()).isEqualTo(2);
         assertThat(chatRooms.get().toList().get(0).getLastMessage()).isEqualTo("내용5");

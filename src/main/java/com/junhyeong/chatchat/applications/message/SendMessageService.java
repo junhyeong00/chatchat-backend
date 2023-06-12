@@ -6,6 +6,8 @@ import com.junhyeong.chatchat.exceptions.CustomerNotFound;
 import com.junhyeong.chatchat.exceptions.UnknownRole;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.message.Message;
+import com.junhyeong.chatchat.models.message.MessageType;
+import com.junhyeong.chatchat.models.message.Sender;
 import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
 import com.junhyeong.chatchat.repositories.message.MessageRepository;
@@ -32,27 +34,28 @@ public class SendMessageService {
 
     @Transactional
     public void sendMessage(MessageRequest messageRequest) {
+        Long senderId = messageRequest.getSenderId();
 
         Username username = switch (messageRequest.getRole()) {
-            case "company" -> companyRepository.findById(messageRequest.getUserId())
-                    .orElseThrow(CompanyNotFound::new).userName();
-            case "customer" -> customerRepository.findById(messageRequest.getUserId())
-                    .orElseThrow(CustomerNotFound::new).userName();
+            case "company" -> companyRepository.findById(senderId)
+                    .orElseThrow(CompanyNotFound::new).username();
+            case "customer" -> customerRepository.findById(senderId)
+                    .orElseThrow(CustomerNotFound::new).username();
             default -> throw new UnknownRole();
         };
 
         Message message = new Message(
                 messageRequest.getChatRoomId(),
-                username,
+                new Sender(senderId, username),
                 messageRequest.getContent(),
-                messageRequest.getType()
+                MessageType.GENERAL
         );
 
         Message saved = messageRepository.save(message);
 
         messagingTemplate.convertAndSend(
-                "/sub/chatrooms/" + saved.chatroomId(),
-                saved.toDto(messageRequest.getUserId())
+                "/sub/chatrooms/" + saved.chatRoomId(),
+                saved.toDto()
         );
     }
 }

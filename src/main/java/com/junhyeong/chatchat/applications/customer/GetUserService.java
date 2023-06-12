@@ -17,7 +17,7 @@ public class GetUserService {
     }
 
     public Customer find(Username userName) {
-        Customer customer = userRepository.findByUserName(userName)
+        Customer customer = userRepository.findByUsername(userName)
                 .orElseThrow(UserNotFound::new);
 
         return customer;

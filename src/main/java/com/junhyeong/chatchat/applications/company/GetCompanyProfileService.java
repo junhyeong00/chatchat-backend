@@ -17,7 +17,7 @@ public class GetCompanyProfileService {
 
     @Transactional(readOnly = true)
     public Company find(Username userName) {
-        return companyRepository.findByUserName(userName)
+        return companyRepository.findByUsername(userName)
                 .orElseThrow(CompanyNotFound::new);
     }
 }

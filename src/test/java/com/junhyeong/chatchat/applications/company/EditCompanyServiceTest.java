@@ -31,7 +31,7 @@ class EditCompanyServiceTest {
 
         EditCompanyRequest editCompanyRequest = EditCompanyRequest.fake(new Name("악덕기업"));
 
-        given(companyRepository.findByUserName(userName))
+        given(companyRepository.findByUsername(userName))
                 .willReturn(Optional.of(Company.fake(userName)));
 
         assertDoesNotThrow(() -> editCompanyService.edit(userName, editCompanyRequest));
@@ -43,7 +43,7 @@ class EditCompanyServiceTest {
 
         EditCompanyRequest editCompanyRequest = EditCompanyRequest.fake(new Name("악덕기업"));
 
-        given(companyRepository.findByUserName(invalidUserName))
+        given(companyRepository.findByUsername(invalidUserName))
                 .willThrow(CompanyNotFound.class);
 
         assertThrows(CompanyNotFound.class,

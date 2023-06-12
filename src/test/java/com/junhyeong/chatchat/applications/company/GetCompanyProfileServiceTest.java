@@ -27,7 +27,7 @@ class GetCompanyProfileServiceTest {
     void find() {
         Username userName = new Username("company123");
 
-        given(companyRepository.findByUserName(userName))
+        given(companyRepository.findByUsername(userName))
                 .willReturn(Optional.of(Company.fake(userName)));
 
         assertDoesNotThrow(() -> getCompanyProfileService.find(userName));
@@ -37,7 +37,7 @@ class GetCompanyProfileServiceTest {
     void findWithCompanyNotFound() {
         Username invalidUserName = new Username("xxx");
 
-        given(companyRepository.findByUserName(invalidUserName))
+        given(companyRepository.findByUsername(invalidUserName))
                 .willThrow(CompanyNotFound.class);
 
         assertThrows(CompanyNotFound.class,

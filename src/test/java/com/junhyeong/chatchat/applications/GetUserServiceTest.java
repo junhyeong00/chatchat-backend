@@ -28,7 +28,7 @@ class GetUserServiceTest {
     void whenUserExists() {
         Username userName = new Username("test123");
 
-        given(userRepository.findByUserName(userName))
+        given(userRepository.findByUsername(userName))
                 .willReturn(Optional.of(Customer.fake(userName)));
 
         assertDoesNotThrow(() -> getUserService.find(userName));
@@ -38,7 +38,7 @@ class GetUserServiceTest {
     void whenUserNotExists() {
         Username userName = new Username("notExists@gmail.com");
 
-        given(userRepository.findByUserName(userName))
+        given(userRepository.findByUsername(userName))
                 .willReturn(Optional.empty());
 
         assertThrows(UserNotFound.class,

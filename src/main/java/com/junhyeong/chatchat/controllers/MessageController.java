@@ -4,7 +4,6 @@ import com.junhyeong.chatchat.applications.message.SendMessageService;
 import com.junhyeong.chatchat.dtos.MessageRequest;
 import com.junhyeong.chatchat.dtos.MessageRequestDto;
 import com.junhyeong.chatchat.exceptions.UnknownRole;
-import com.junhyeong.chatchat.models.message.Message;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,7 +18,7 @@ public class MessageController {
         this.sendMessageService = sendMessageService;
     }
 
-    @MessageMapping("/stomp/chat")
+    @MessageMapping("/messages")
     public void sendMessage(MessageRequestDto messageRequestDto) {
         MessageRequest messageRequest = MessageRequest.of(messageRequestDto);
 

@@ -18,7 +18,7 @@ public class EditCompanyService {
 
     @Transactional
     public void edit(Username userName, EditCompanyRequest editCompanyRequest) {
-        Company company = companyRepository.findByUserName(userName)
+        Company company = companyRepository.findByUsername(userName)
                 .orElseThrow(CompanyNotFound::new);
 
         company.edit(

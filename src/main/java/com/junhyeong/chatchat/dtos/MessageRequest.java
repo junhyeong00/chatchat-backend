@@ -1,39 +1,33 @@
 package com.junhyeong.chatchat.dtos;
 
 import com.junhyeong.chatchat.models.message.Content;
-import com.junhyeong.chatchat.models.message.MessageType;
 
 public class MessageRequest {
-    private MessageType type;
-
     private Long chatRoomId;
 
-    private Long userId;
+    private Long senderId;
 
     private Content content;
 
     private String role;
 
-    public MessageRequest(MessageType type, Long chatRoomId, Long userId, Content content, String role) {
-        this.type = type;
+    public MessageRequest( Long chatRoomId, Long senderId, Content content, String role) {
         this.chatRoomId = chatRoomId;
-        this.userId = userId;
+        this.senderId = senderId;
         this.content = content;
         this.role = role;
     }
 
     public static MessageRequest of(MessageRequestDto messageRequestDto) {
         return new MessageRequest(
-                MessageType.valueOf(messageRequestDto.getType()),
                 messageRequestDto.getChatRoomId(),
-                messageRequestDto.getUserId(),
+                messageRequestDto.getSenderId(),
                 new Content(messageRequestDto.getContent()),
                 messageRequestDto.getRole());
     }
 
     public static MessageRequest fake(Content content, String role) {
         return new MessageRequest(
-                MessageType.GENERAL,
                 1L,
                 1L,
                 content,
@@ -41,16 +35,12 @@ public class MessageRequest {
         );
     }
 
-    public MessageType getType() {
-        return type;
-    }
-
     public Long getChatRoomId() {
         return chatRoomId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getSenderId() {
+        return senderId;
     }
 
     public Content getContent() {

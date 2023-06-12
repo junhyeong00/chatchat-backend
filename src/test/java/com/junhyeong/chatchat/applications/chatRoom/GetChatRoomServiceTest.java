@@ -1,16 +1,12 @@
 package com.junhyeong.chatchat.applications.chatRoom;
 
-import com.junhyeong.chatchat.applications.chatroom.GetChatRoomService;
 import com.junhyeong.chatchat.dtos.ChatRoomDetailDto;
 import com.junhyeong.chatchat.models.chatRoom.ChatRoom;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.customer.Customer;
 import com.junhyeong.chatchat.models.message.Content;
 import com.junhyeong.chatchat.models.message.Message;
-import com.junhyeong.chatchat.models.message.MessageType;
-import com.junhyeong.chatchat.models.message.Sender;
 import com.junhyeong.chatchat.repositories.chatRoom.ChatRoomRepository;
-import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
 import com.junhyeong.chatchat.repositories.message.MessageRepository;
 import org.junit.jupiter.api.BeforeEach;

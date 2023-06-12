@@ -1,7 +1,7 @@
 package com.junhyeong.chatchat.controllers;
 
+import com.junhyeong.chatchat.applications.chatRoom.GetChatRoomService;
 import com.junhyeong.chatchat.applications.chatRoom.GetChatRoomsService;
-import com.junhyeong.chatchat.applications.chatroom.GetChatRoomService;
 import com.junhyeong.chatchat.dtos.ChatRoomDto;
 import com.junhyeong.chatchat.exceptions.ChatRoomNotFound;
 import com.junhyeong.chatchat.exceptions.CustomerNotFound;

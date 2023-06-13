@@ -1,4 +1,4 @@
-package com.junhyeong.chatchat.controllers;
+package com.junhyeong.chatchat.controllers.company;
 
 import com.junhyeong.chatchat.applications.chatRoom.GetChatRoomService;
 import com.junhyeong.chatchat.applications.chatRoom.GetChatRoomsService;

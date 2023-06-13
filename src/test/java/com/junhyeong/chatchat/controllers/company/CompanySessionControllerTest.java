@@ -1,6 +1,7 @@
-package com.junhyeong.chatchat.controllers;
+package com.junhyeong.chatchat.controllers.company;
 
 import com.junhyeong.chatchat.applications.login.CompanyLoginService;
+import com.junhyeong.chatchat.controllers.company.CompanySessionController;
 import com.junhyeong.chatchat.dtos.TokenDto;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Password;

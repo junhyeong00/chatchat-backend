@@ -1,4 +1,4 @@
-package com.junhyeong.chatchat.controllers;
+package com.junhyeong.chatchat.controllers.common;
 
 import com.junhyeong.chatchat.applications.message.SendMessageService;
 import com.junhyeong.chatchat.dtos.MessageRequest;

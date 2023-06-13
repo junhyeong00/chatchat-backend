@@ -1,4 +1,4 @@
-package com.junhyeong.chatchat.controllers;
+package com.junhyeong.chatchat.controllers.common;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

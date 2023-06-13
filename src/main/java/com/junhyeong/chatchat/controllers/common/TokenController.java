@@ -1,4 +1,4 @@
-package com.junhyeong.chatchat.controllers;
+package com.junhyeong.chatchat.controllers.common;
 
 import com.junhyeong.chatchat.applications.token.IssueTokenService;
 import com.junhyeong.chatchat.dtos.ReissuedTokenDto;

@@ -1,7 +1,8 @@
-package com.junhyeong.chatchat.controllers;
+package com.junhyeong.chatchat.controllers.common;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.junhyeong.chatchat.applications.token.IssueTokenService;
+import com.junhyeong.chatchat.controllers.common.TokenController;
 import com.junhyeong.chatchat.dtos.TokenDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.junhyeong.chatchat.controllers;
+package com.junhyeong.chatchat.controllers.customer;
 
 import com.junhyeong.chatchat.applications.login.CustomerLoginService;
 import com.junhyeong.chatchat.dtos.LoginRequestDto;

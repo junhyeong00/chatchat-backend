@@ -1,7 +1,8 @@
-package com.junhyeong.chatchat.controllers;
+package com.junhyeong.chatchat.controllers.company;
 
 import com.junhyeong.chatchat.applications.company.EditCompanyService;
 import com.junhyeong.chatchat.applications.company.GetCompanyProfileService;
+import com.junhyeong.chatchat.controllers.company.CompanyController;
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;

@@ -1,6 +1,6 @@
 package com.junhyeong.chatchat.controllers;
 
-import com.junhyeong.chatchat.applications.login.LoginService;
+import com.junhyeong.chatchat.applications.login.CustomerLoginService;
 import com.junhyeong.chatchat.dtos.LoginRequestDto;
 import com.junhyeong.chatchat.dtos.LoginResultDto;
 import com.junhyeong.chatchat.dtos.TokenDto;
@@ -21,11 +21,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("company/session")
-public class SessionController {
-    private final LoginService loginService;
+@RequestMapping("customer/session")
+public class CustomerSessionController {
+    private final CustomerLoginService loginService;
 
-    public SessionController(LoginService loginService) {
+    public CustomerSessionController(CustomerLoginService loginService) {
         this.loginService = loginService;
     }
 

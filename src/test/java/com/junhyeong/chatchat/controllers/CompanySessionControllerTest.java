@@ -1,6 +1,6 @@
 package com.junhyeong.chatchat.controllers;
 
-import com.junhyeong.chatchat.applications.login.LoginService;
+import com.junhyeong.chatchat.applications.login.CompanyLoginService;
 import com.junhyeong.chatchat.dtos.TokenDto;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Password;
@@ -20,14 +20,14 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(SessionController.class)
+@WebMvcTest(CompanySessionController.class)
 @ActiveProfiles("test")
-class SessionControllerTest {
+class CompanySessionControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private LoginService loginService;
+    private CompanyLoginService loginService;
 
     @BeforeEach
     void setup() {

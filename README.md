@@ -21,16 +21,12 @@
 <br>
 
 ## 아키텍쳐
-Layered Architecture
-
-1. UI Layer
-2. Application Layer
-3. Domain Layer
-4. Infrastructure Layer
-
-상위 레이어는 하위 레이어에 의존하며, 하위 레이어는 상위 레이어를 모릅니다.
-
-각 계층은 책임에 맞는 동작 수행 후 다른 계층과 상호작용, 계층 간 데이터 교환에는 DTO(Data Transfer Object)를 이용해 정의하여 사용하였습니다.
+<p align="center">
+  <br>
+  <img width="800" alt="아키텍쳐" 
+    src="https://github.com/junhyeong00/Trend-up-backend/assets/107493122/d144515f-bf48-46d1-b358-bef773c84734">
+  <br>
+</p>
 
 <br>
 

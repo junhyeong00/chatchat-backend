@@ -5,6 +5,7 @@ import com.junhyeong.chatchat.exceptions.RefreshTokenNotFound;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.token.Token;
 import com.junhyeong.chatchat.repositories.token.RefreshTokenRepository;
+import com.junhyeong.chatchat.utils.HttpUtil;
 import com.junhyeong.chatchat.utils.JwtUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -38,7 +38,7 @@ public class CustomerSessionController {
             @Valid @RequestBody LoginRequestDto loginRequestDto
     ) {
         try {
-            Username userName = Username.of(loginRequestDto.userName());
+            Username userName = Username.of(loginRequestDto.username());
             Password password = Password.of(loginRequestDto.password());
 
             TokenDto token = loginService.login(userName, password);

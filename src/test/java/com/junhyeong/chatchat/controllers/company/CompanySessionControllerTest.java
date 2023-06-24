@@ -56,7 +56,7 @@ class CompanySessionControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/company/session")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
-                                "\"userName\": \"test123\", " +
+                                "\"username\": \"test123\", " +
                                 "\"password\": \"Password1234!\"" +
                                 "}"))
                 .andExpect(status().isCreated())
@@ -70,7 +70,7 @@ class CompanySessionControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/company/session")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
-                                "\"userName\": \"wrong123\", " +
+                                "\"username\": \"wrong123\", " +
                                 "\"password\": \"notPassword1234!\"" +
                                 "}"))
                 .andExpect(status().isBadRequest());
@@ -81,7 +81,7 @@ class CompanySessionControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/company/session")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
-                                "\"userName\":\"test123\", " +
+                                "\"username\":\"test123\", " +
                                 "\"password\": \"notPassword1234!\"" +
                                 "}"))
                 .andExpect(status().isBadRequest());
@@ -92,7 +92,7 @@ class CompanySessionControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/company/session")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
-                                "\"userName\":\"wrong123\", " +
+                                "\"username\":\"wrong123\", " +
                                 "\"password\": \"Password1234!\"" +
                                 "}"))
                 .andExpect(status().isBadRequest());
@@ -103,7 +103,7 @@ class CompanySessionControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/company/session")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
-                                "\"userName\":\"\", " +
+                                "\"username\":\"\", " +
                                 "\"password\": \"Password1234!\"" +
                                 "}"))
                 .andExpect(status().isBadRequest());
@@ -114,7 +114,7 @@ class CompanySessionControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/company/session")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
-                                "\"userName\":\"test123\", " +
+                                "\"username\":\"test123\", " +
                                 "\"password\": \"\"" +
                                 "}"))
                 .andExpect(status().isBadRequest());

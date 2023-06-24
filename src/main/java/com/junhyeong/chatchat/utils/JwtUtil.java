@@ -20,7 +20,7 @@ public class JwtUtil {
 
     public String encode(Username userName) {
         return JWT.create()
-                .withClaim("userName", userName.value())
+                .withClaim("username", userName.value())
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDATION_SECOND))
                 .sign(algorithm);
@@ -39,7 +39,7 @@ public class JwtUtil {
 
         DecodedJWT verify = verifier.verify(token);
 
-        String value = verify.getClaim("userName").asString();
+        String value = verify.getClaim("username").asString();
 
         return new Username(value);
     }

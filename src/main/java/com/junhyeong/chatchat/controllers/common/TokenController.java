@@ -1,9 +1,11 @@
 package com.junhyeong.chatchat.controllers.common;
 
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.junhyeong.chatchat.applications.token.IssueTokenService;
 import com.junhyeong.chatchat.dtos.ReissuedTokenDto;
 import com.junhyeong.chatchat.dtos.TokenDto;
 import com.junhyeong.chatchat.exceptions.ReissueTokenFailed;
+import com.junhyeong.chatchat.utils.HttpUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -21,9 +23,11 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("token")
 public class TokenController {
     private final IssueTokenService issueTokenService;
+    private final HttpUtil httpUtil;
 
-    public TokenController(IssueTokenService issueTokenService) {
+    public TokenController(IssueTokenService issueTokenService, HttpUtil httpUtil) {
         this.issueTokenService = issueTokenService;
+        this.httpUtil = httpUtil;
     }
 
     @PostMapping
@@ -35,14 +39,9 @@ public class TokenController {
         try {
             TokenDto token = issueTokenService.reissue(refreshToken);
 
-            ResponseCookie cookie = ResponseCookie.from("refreshToken", token.refreshToken())
-                    .httpOnly(true)
-                    .path("/")
-                    .sameSite("Lax")
-                    .domain("localhost")
-                    .build();
+            ResponseCookie cookie = httpUtil.generateHttpOnlyCookie("refreshToken", token.refreshToken());
 
-            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            httpUtil.addCookie(cookie, response);
 
             return new ReissuedTokenDto(token.accessToken());
         } catch (Exception exception) {
@@ -59,5 +58,11 @@ public class TokenController {
         response.addCookie(cookie);
 
         return exception.getMessage();
+    }
+
+    @ExceptionHandler(JWTDecodeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String invalidRefreshToken() {
+        return "invalid refreshToken";
     }
 }

@@ -7,7 +7,7 @@ import com.junhyeong.chatchat.dtos.TokenDto;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Password;
 import com.junhyeong.chatchat.models.commom.Username;
-import org.springframework.http.HttpHeaders;
+import com.junhyeong.chatchat.utils.HttpUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,9 +24,12 @@ import javax.validation.Valid;
 @RequestMapping("company/session")
 public class CompanySessionController {
     private final CompanyLoginService loginService;
+    private final HttpUtil httpUtil;
 
-    public CompanySessionController(CompanyLoginService loginService) {
+    public CompanySessionController(CompanyLoginService loginService,
+                                    HttpUtil httpUtil) {
         this.loginService = loginService;
+        this.httpUtil = httpUtil;
     }
 
     @PostMapping
@@ -41,14 +44,9 @@ public class CompanySessionController {
 
             TokenDto token = loginService.login(userName, password);
 
-            ResponseCookie cookie = ResponseCookie.from("refreshToken", token.refreshToken())
-                    .httpOnly(true)
-                    .path("/")
-                    .sameSite("Lax")
-                    .domain("localhost")
-                    .build();
+            ResponseCookie cookie = httpUtil.generateHttpOnlyCookie("refreshToken", token.refreshToken());
 
-            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            httpUtil.addCookie(cookie, response);
 
             return new LoginResultDto(token.accessToken());
         } catch (Exception exception) {

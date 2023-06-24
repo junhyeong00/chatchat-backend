@@ -1,6 +1,7 @@
 package com.junhyeong.chatchat;
 
 import com.junhyeong.chatchat.interceptors.AuthenticationInterceptor;
+import com.junhyeong.chatchat.utils.HttpUtil;
 import com.junhyeong.chatchat.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -58,5 +59,10 @@ public class ChatchatApplication {
 	@Bean
 	public JwtUtil jwtUtil() {
 		return new JwtUtil(secret);
+	}
+
+	@Bean
+	public HttpUtil httpUtil() {
+		return new HttpUtil();
 	}
 }

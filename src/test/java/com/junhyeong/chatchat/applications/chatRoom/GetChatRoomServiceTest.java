@@ -7,6 +7,7 @@ import com.junhyeong.chatchat.models.customer.Customer;
 import com.junhyeong.chatchat.models.message.Content;
 import com.junhyeong.chatchat.models.message.Message;
 import com.junhyeong.chatchat.repositories.chatRoom.ChatRoomRepository;
+import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
 import com.junhyeong.chatchat.repositories.message.MessageRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 class GetChatRoomServiceTest {
+    private CompanyRepository companyRepository;
     private CustomerRepository customerRepository;
     private ChatRoomRepository chatRoomRepository;
     private MessageRepository messageRepository;
@@ -27,17 +29,20 @@ class GetChatRoomServiceTest {
 
     @BeforeEach
     void setUp() {
+        companyRepository = mock(CompanyRepository.class);
         customerRepository = mock(CustomerRepository.class);
         chatRoomRepository = mock(ChatRoomRepository.class);
         messageRepository = mock(MessageRepository.class);
         getChatRoomService = new GetChatRoomService(
-                 customerRepository, chatRoomRepository, messageRepository);
+                companyRepository, customerRepository, chatRoomRepository, messageRepository);
     }
 
     @Test
     void chatRoomDetail() {
         Username username = new Username("company123");
         Long chatRoomId = 1L;
+
+        given(companyRepository.existsByUsername(username)).willReturn(true);
 
         given(chatRoomRepository.findById(chatRoomId))
                 .willReturn(Optional.of(ChatRoom.fake(chatRoomId)));
@@ -58,6 +63,6 @@ class GetChatRoomServiceTest {
         ChatRoomDetailDto found = getChatRoomService.chatRoomDetail(username, chatRoomId);
 
         assertThat(found).isNotNull();
-        assertThat(found.getChatRoomId()).isEqualTo(chatRoomId);
+        assertThat(found.getId()).isEqualTo(chatRoomId);
     }
 }

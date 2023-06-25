@@ -4,6 +4,7 @@ import com.junhyeong.chatchat.applications.company.EditCompanyService;
 import com.junhyeong.chatchat.applications.company.GetCompanyProfileService;
 import com.junhyeong.chatchat.controllers.company.CompanyController;
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
+import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
 import com.junhyeong.chatchat.utils.JwtUtil;
@@ -54,11 +55,11 @@ class CompanyControllerTest {
         String token = jwtUtil.encode(invalidUserName);
 
         given(getCompanyProfileService.find(invalidUserName))
-                .willThrow(CompanyNotFound.class);
+                .willThrow(Unauthorized.class);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/companies/me")
                         .header("Authorization", "Bearer " + token))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -115,7 +116,7 @@ class CompanyControllerTest {
         String token = jwtUtil.encode(invalidUserName);
 
         doAnswer(invocation -> {
-            throw new CompanyNotFound();
+            throw new Unauthorized();
         }).when(editCompanyService).edit(any(),any());
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/companies/me")
@@ -126,6 +127,6 @@ class CompanyControllerTest {
                                 "   \"description\":\"악덕기업입니다\", " +
                                 "   \"imageUrl\":\"이미지\"" +
                                 "}"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isUnauthorized());
     }
 }

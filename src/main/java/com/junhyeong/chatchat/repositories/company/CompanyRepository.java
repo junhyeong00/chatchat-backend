@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Long>, CompanyRepositoryQueryDsl {
     Optional<Company> findByUsername(Username username);
+
+    boolean existsByUsername(Username username);
 }

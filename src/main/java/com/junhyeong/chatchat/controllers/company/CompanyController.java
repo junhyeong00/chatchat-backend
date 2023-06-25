@@ -5,8 +5,8 @@ import com.junhyeong.chatchat.applications.company.GetCompanyProfileService;
 import com.junhyeong.chatchat.dtos.CompanyProfileDto;
 import com.junhyeong.chatchat.dtos.EditCompanyRequest;
 import com.junhyeong.chatchat.dtos.EditCompanyRequestDto;
-import com.junhyeong.chatchat.exceptions.CompanyNotFound;
 import com.junhyeong.chatchat.exceptions.EditCompanyFailed;
+import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
 import org.springframework.http.HttpStatus;
@@ -51,16 +51,16 @@ public class CompanyController {
             EditCompanyRequest editCompanyRequest = EditCompanyRequest.of(editCompanyRequestDto);
 
             editCompanyService.edit(username, editCompanyRequest);
-        } catch (CompanyNotFound e) {
-            throw new CompanyNotFound();
+        } catch (Unauthorized e) {
+            throw new Unauthorized();
         } catch (Exception e) {
             throw new EditCompanyFailed(e.getMessage());
         }
     }
 
-    @ExceptionHandler(CompanyNotFound.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String companyNotFound(Exception e) {
+    @ExceptionHandler(Unauthorized.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String unauthorized(Exception e) {
         return e.getMessage();
     }
 

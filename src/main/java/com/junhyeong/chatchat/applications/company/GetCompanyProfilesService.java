@@ -1,6 +1,7 @@
 package com.junhyeong.chatchat.applications.company;
 
 import com.junhyeong.chatchat.dtos.CompanySummaryDto;
+import com.junhyeong.chatchat.exceptions.CompanyNotFound;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,10 @@ public class GetCompanyProfilesService {
 
     @Transactional(readOnly = true)
     public Page<CompanySummaryDto> companyProfiles(Username username, String keyword, Integer page) {
+        if (!companyRepository.existsByUsername(username)) {
+            throw new CompanyNotFound();
+        }
+
         Pageable pageable = PageRequest.of(page - 1, 10);
 
         return companyRepository.findAllDtoByKeyword(keyword, pageable);

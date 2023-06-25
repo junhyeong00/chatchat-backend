@@ -1,29 +1,26 @@
 package com.junhyeong.chatchat.dtos;
 
-import com.junhyeong.chatchat.models.commom.Image;
-import com.junhyeong.chatchat.models.commom.Name;
-
 import java.util.List;
 
 public class ChatRoomDetailDto {
-    private Long chatRoomId;
+    private Long id;
     private Long receiverId;
     private String receiverName;
     private String receiverImageUrl;
     private List<MessageDto> messages;
 
-    public ChatRoomDetailDto(Long chatRoomId, Long receiverId,
+    public ChatRoomDetailDto(Long id, Long receiverId,
                              String receiverName, String receiverImageUrl,
                              List<MessageDto> messages) {
-        this.chatRoomId = chatRoomId;
+        this.id = id;
         this.receiverId = receiverId;
         this.receiverName = receiverName;
         this.receiverImageUrl = receiverImageUrl;
         this.messages = messages;
     }
 
-    public Long getChatRoomId() {
-        return chatRoomId;
+    public Long getId() {
+        return id;
     }
 
     public Long getReceiverId() {

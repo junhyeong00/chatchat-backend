@@ -32,6 +32,8 @@ class GetCompanyProfilesServiceTest {
 
         String keyword = "";
 
+        given(companyRepository.existsByUsername(username)).willReturn(true);
+
         given(companyRepository.findAllDtoByKeyword(any(), any()))
                 .willReturn(new PageImpl<>(List.of(CompanySummaryDto.fake())));
 

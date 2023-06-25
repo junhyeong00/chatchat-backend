@@ -8,6 +8,7 @@ import com.junhyeong.chatchat.dtos.ChatRoomsDto;
 import com.junhyeong.chatchat.dtos.PageDto;
 import com.junhyeong.chatchat.exceptions.ChatRoomNotFound;
 import com.junhyeong.chatchat.exceptions.CustomerNotFound;
+import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.models.commom.Username;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -54,6 +55,12 @@ public class ChatRoomController {
             @PathVariable("id") Long chatRoomId
     ) {
         return getChatRoomService.chatRoomDetail(username, chatRoomId);
+    }
+
+    @ExceptionHandler(Unauthorized.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String unauthorized(Exception e) {
+        return e.getMessage();
     }
 
     @ExceptionHandler(ChatRoomNotFound.class)

@@ -3,7 +3,7 @@ package com.junhyeong.chatchat.applications.chatRoom;
 import com.junhyeong.chatchat.dtos.ChatRoomDto;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.repositories.chatRoom.ChatRoomRepository;
-import com.junhyeong.chatchat.repositories.message.MessageRepository;
+import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -17,19 +17,23 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 class GetChatRoomsServiceTest {
+    private CompanyRepository companyRepository;
     private ChatRoomRepository chatRoomRepository;
     private GetChatRoomsService getChatRoomsService;
 
     @BeforeEach
     void setUp() {
+        companyRepository = mock(CompanyRepository.class);
         chatRoomRepository = mock(ChatRoomRepository.class);
-        getChatRoomsService = new GetChatRoomsService(chatRoomRepository);
+        getChatRoomsService = new GetChatRoomsService(companyRepository, chatRoomRepository);
     }
 
     @Test
     void chatRooms() {
         Username username = new Username("company123");
         int page = 1;
+
+        given(companyRepository.existsByUsername(username)).willReturn(true);
 
         given(chatRoomRepository.findAllDtoByCompany(any(), any()))
                 .willReturn(new PageImpl<>(List.of(ChatRoomDto.fake())));

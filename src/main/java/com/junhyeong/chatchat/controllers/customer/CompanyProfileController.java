@@ -5,7 +5,7 @@ import com.junhyeong.chatchat.dtos.CompanySummariesDto;
 import com.junhyeong.chatchat.dtos.CompanySummaryDto;
 import com.junhyeong.chatchat.dtos.PageDto;
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
-import com.junhyeong.chatchat.exceptions.CustomerNotFound;
+import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.models.commom.Username;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -44,9 +44,9 @@ public class CompanyProfileController {
         return new CompanySummariesDto(companySummaries, pageDto);
     }
 
-    @ExceptionHandler(CustomerNotFound.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String customerNotFound(Exception e) {
+    @ExceptionHandler(Unauthorized.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String unauthorized(Exception e) {
         return e.getMessage();
     }
 

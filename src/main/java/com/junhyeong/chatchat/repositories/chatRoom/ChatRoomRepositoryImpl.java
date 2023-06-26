@@ -52,7 +52,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                 .on(chatRoom.customer.eq(customer.username))
                 .where(message.type.eq(MessageType.GENERAL))
                 .groupBy(chatRoom.id, customer.name, customer.profileImage,
-                         message.content, message.createdAt)
+                         message.content, message.createdAt, message.readStatus)
                 .having(message.createdAt.eq(
                         getLastCreatedAt(chatRoom)
                 ))

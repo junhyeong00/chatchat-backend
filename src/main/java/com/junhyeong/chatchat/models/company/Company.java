@@ -76,6 +76,9 @@ public class Company {
     public Company(Username username, Name name) {
         this.username = username;
         this.name = name;
+        this.description = new Description("");
+        this.profileImage = new Image("기본 이미지");
+        this.profileVisibility = ProfileVisibility.HIDDEN;
     }
 
     public static Company fake(Username username) {

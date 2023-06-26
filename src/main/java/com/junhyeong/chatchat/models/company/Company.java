@@ -1,5 +1,6 @@
 package com.junhyeong.chatchat.models.company;
 
+import com.junhyeong.chatchat.dtos.CompanyDetailDto;
 import com.junhyeong.chatchat.dtos.CompanyProfileDto;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Image;
@@ -135,7 +136,7 @@ public class Company {
         return description;
     }
 
-    public Image pProfileImage() {
+    public Image profileImage() {
         return profileImage;
     }
 
@@ -152,5 +153,13 @@ public class Company {
         this.description = description;
         this.profileImage = profileImage;
         this.profileVisibility = profileVisibility;
+    }
+
+    public CompanyDetailDto toDetailDto() {
+        return new CompanyDetailDto(
+                id,
+                name.value(),
+                description.value(),
+                profileImage.value());
     }
 }

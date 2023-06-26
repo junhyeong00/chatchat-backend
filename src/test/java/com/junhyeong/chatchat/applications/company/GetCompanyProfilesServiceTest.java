@@ -3,6 +3,7 @@ package com.junhyeong.chatchat.applications.company;
 import com.junhyeong.chatchat.dtos.CompanySummaryDto;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.repositories.company.CompanyRepository;
+import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -17,12 +18,14 @@ import static org.mockito.Mockito.mock;
 
 class GetCompanyProfilesServiceTest {
     private CompanyRepository companyRepository;
+    private CustomerRepository customerRepository;
     private GetCompanyProfilesService getCompanyProfilesService;
 
     @BeforeEach
     void setUp() {
         companyRepository = mock(CompanyRepository.class);
-        getCompanyProfilesService = new GetCompanyProfilesService(companyRepository);
+        customerRepository = mock(CustomerRepository.class);
+        getCompanyProfilesService = new GetCompanyProfilesService(customerRepository, companyRepository);
     }
 
     @Test
@@ -32,7 +35,7 @@ class GetCompanyProfilesServiceTest {
 
         String keyword = "";
 
-        given(companyRepository.existsByUsername(username)).willReturn(true);
+        given(customerRepository.existsByUsername(username)).willReturn(true);
 
         given(companyRepository.findAllDtoByKeyword(any(), any()))
                 .willReturn(new PageImpl<>(List.of(CompanySummaryDto.fake())));

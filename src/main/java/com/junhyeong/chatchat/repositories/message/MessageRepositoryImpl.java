@@ -21,7 +21,7 @@ public class MessageRepositoryImpl implements MessageRepositoryQueryDsl {
         QMessage message = QMessage.message;
 
         return queryFactory
-                .select(message)
+                .selectFrom(message)
                 .where(message.chatRoomId.eq(chatRoomId).and(
                         message.type.eq(MessageType.GENERAL)
                 ))

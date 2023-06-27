@@ -1,7 +1,9 @@
 package com.junhyeong.chatchat.models.company;
 
+import com.junhyeong.chatchat.dtos.ChatRoomDetailDto;
 import com.junhyeong.chatchat.dtos.CompanyDetailDto;
 import com.junhyeong.chatchat.dtos.CompanyProfileDto;
+import com.junhyeong.chatchat.dtos.MessageDto;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Image;
 import com.junhyeong.chatchat.models.commom.Name;
@@ -20,6 +22,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Company {
@@ -161,5 +164,15 @@ public class Company {
                 name.value(),
                 description.value(),
                 profileImage.value());
+    }
+
+    public ChatRoomDetailDto toRoomDetailDto(Long chatRoomId, List<MessageDto> messages) {
+        return new ChatRoomDetailDto(
+                chatRoomId,
+                this.id,
+                this.name.value(),
+                this.profileImage.value(),
+                messages
+        );
     }
 }

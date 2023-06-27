@@ -21,16 +21,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class GetCompanyChatRoomService {
+public class GetCustomerChatRoomService {
     private final CompanyRepository companyRepository;
     private final CustomerRepository customerRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final MessageRepository messageRepository;
 
-    public GetCompanyChatRoomService(CompanyRepository companyRepository,
-                                     CustomerRepository customerRepository,
-                                     ChatRoomRepository chatRoomRepository,
-                                     MessageRepository messageRepository) {
+    public GetCustomerChatRoomService(CompanyRepository companyRepository,
+                                      CustomerRepository customerRepository,
+                                      ChatRoomRepository chatRoomRepository,
+                                      MessageRepository messageRepository) {
         this.companyRepository = companyRepository;
         this.customerRepository = customerRepository;
         this.chatRoomRepository = chatRoomRepository;
@@ -39,23 +39,23 @@ public class GetCompanyChatRoomService {
 
     @Transactional
     public ChatRoomDetailDto chatRoomDetail(Username username, Long chatRoomId) {
-        Company company = companyRepository.findByUsername(username)
-                .orElseThrow(ChatRoomNotFound::new);
+        Customer customer = customerRepository.findByUsername(username)
+                .orElseThrow(Unauthorized::new);
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(ChatRoomNotFound::new);
 
-        List<Message> messages = messageRepository.findAllGeneralMessagesByChatRoomId(chatRoom.id());
+        List<Message> messages = messageRepository.findAllByChatRoomId(chatRoom.id());
 
-        updateMessagesAsReadFromOthers(company.username(), messages);
+        updateMessagesAsReadFromOthers(customer.username(), messages);
 
         List<MessageDto> messageDtos = messages.stream()
                 .map(Message::toDto).toList();
 
-        Customer customer = customerRepository.findByUsername(chatRoom.customer())
-                .orElseThrow(CustomerNotFound::new);
+        Company company = companyRepository.findByUsername(chatRoom.company())
+                .orElseThrow(CompanyNotFound::new);
 
-        ChatRoomDetailDto chatRoomDetailDto = customer.toRoomDetailDto(chatRoom.id(), messageDtos);
+        ChatRoomDetailDto chatRoomDetailDto = company.toRoomDetailDto(chatRoom.id(), messageDtos);
 
         return chatRoomDetailDto;
     }

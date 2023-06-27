@@ -21,12 +21,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class GetCompanyChatRoomServiceTest {
+class GetCustomerChatRoomServiceTest {
     private CompanyRepository companyRepository;
     private CustomerRepository customerRepository;
     private ChatRoomRepository chatRoomRepository;
     private MessageRepository messageRepository;
-    private GetCompanyChatRoomService getChatRoomService;
+    private GetCustomerChatRoomService getChatRoomService;
 
     @BeforeEach
     void setUp() {
@@ -34,32 +34,32 @@ class GetCompanyChatRoomServiceTest {
         customerRepository = mock(CustomerRepository.class);
         chatRoomRepository = mock(ChatRoomRepository.class);
         messageRepository = mock(MessageRepository.class);
-        getChatRoomService = new GetCompanyChatRoomService(
+        getChatRoomService = new GetCustomerChatRoomService(
                 companyRepository, customerRepository, chatRoomRepository, messageRepository);
     }
 
     @Test
     void chatRoomDetail() {
-        Username username = new Username("company123");
+        Username username = new Username("customer123");
         Long chatRoomId = 1L;
 
-        given(companyRepository.findByUsername(username))
-                .willReturn(Optional.of(Company.fake(username)));
+        given(customerRepository.findByUsername(username))
+                .willReturn(Optional.of(Customer.fake(username)));
 
         given(chatRoomRepository.findById(chatRoomId))
                 .willReturn(Optional.of(ChatRoom.fake(chatRoomId)));
 
-        Username customerUsername = new Username("customer");
-        Customer customer = Customer.fake(customerUsername);
+        Username companyUsername = new Username("company");
+        Company company = Company.fake(companyUsername);
 
-        given(customerRepository.findByUsername(customerUsername))
-                .willReturn(Optional.of(customer));
+        given(companyRepository.findByUsername(companyUsername))
+                .willReturn(Optional.of(company));
 
         List<Message> messages = List.of(
-                Message.fake(customerUsername, new Content("내용1"))
+                Message.fake(companyUsername, new Content("내용1"))
         );
 
-        given(messageRepository.findAllGeneralMessagesByChatRoomId(chatRoomId))
+        given(messageRepository.findAllByChatRoomId(chatRoomId))
                 .willReturn(messages);
 
         ChatRoomDetailDto found = getChatRoomService.chatRoomDetail(username, chatRoomId);

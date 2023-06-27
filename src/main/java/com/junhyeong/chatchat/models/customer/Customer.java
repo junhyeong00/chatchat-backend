@@ -1,6 +1,8 @@
 package com.junhyeong.chatchat.models.customer;
 
 import com.junhyeong.chatchat.dtos.ChatRoomDetailDto;
+import com.junhyeong.chatchat.dtos.CompanyProfileDto;
+import com.junhyeong.chatchat.dtos.CustomerProfileDto;
 import com.junhyeong.chatchat.dtos.MessageDto;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Image;
@@ -106,5 +108,9 @@ public class Customer {
                 this.profileImage.value(),
                 messages
         );
+    }
+
+    public CustomerProfileDto toProfileDto() {
+        return new CustomerProfileDto(id, name.value(), profileImage.value());
     }
 }

@@ -113,4 +113,9 @@ public class Customer {
     public CustomerProfileDto toProfileDto() {
         return new CustomerProfileDto(id, name.value(), profileImage.value());
     }
+
+    public void edit(Name name, Image profileImage) {
+        this.name = name;
+        this.profileImage = profileImage;
+    }
 }

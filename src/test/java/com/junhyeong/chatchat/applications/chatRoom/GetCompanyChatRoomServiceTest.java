@@ -20,12 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class GetChatRoomServiceTest {
+class GetCompanyChatRoomServiceTest {
     private CompanyRepository companyRepository;
     private CustomerRepository customerRepository;
     private ChatRoomRepository chatRoomRepository;
     private MessageRepository messageRepository;
-    private GetChatRoomService getChatRoomService;
+    private GetCompanyChatRoomService getChatRoomService;
 
     @BeforeEach
     void setUp() {
@@ -33,7 +33,7 @@ class GetChatRoomServiceTest {
         customerRepository = mock(CustomerRepository.class);
         chatRoomRepository = mock(ChatRoomRepository.class);
         messageRepository = mock(MessageRepository.class);
-        getChatRoomService = new GetChatRoomService(
+        getChatRoomService = new GetCompanyChatRoomService(
                 companyRepository, customerRepository, chatRoomRepository, messageRepository);
     }
 

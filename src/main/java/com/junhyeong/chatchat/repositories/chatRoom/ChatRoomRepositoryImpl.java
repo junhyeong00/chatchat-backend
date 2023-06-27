@@ -3,6 +3,7 @@ package com.junhyeong.chatchat.repositories.chatRoom;
 import com.junhyeong.chatchat.dtos.ChatRoomDto;
 import com.junhyeong.chatchat.models.chatRoom.QChatRoom;
 import com.junhyeong.chatchat.models.commom.Username;
+import com.junhyeong.chatchat.models.company.QCompany;
 import com.junhyeong.chatchat.models.customer.QCustomer;
 import com.junhyeong.chatchat.models.message.MessageType;
 import com.junhyeong.chatchat.models.message.QMessage;
@@ -66,6 +67,39 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                 .fetch();
 
         Long count = getPageCount(company, chatRoom);
+
+        return new PageImpl<>(chatRooms, pageable, count);
+    }
+
+    @Override
+    public Page<ChatRoomDto> findAllDtoByCustomer(Username customer, Pageable pageable) {
+        QChatRoom chatRoom = QChatRoom.chatRoom;
+        QMessage message = QMessage.message;
+        QCompany company = QCompany.company;
+
+        List<ChatRoomDto> chatRooms = queryFactory
+                .select(Projections.constructor(ChatRoomDto.class,
+                        chatRoom.id,
+                        company.name,
+                        company.profileImage,
+                        message.content,
+                        message.createdAt,
+                        getUnreadMessageCount(chatRoom)
+                ))
+                .from(chatRoom)
+                .leftJoin(message)
+                .on(chatRoom.id.eq(message.chatRoomId))
+                .leftJoin(company)
+                .on(chatRoom.company.eq(company.username))
+                .groupBy(chatRoom.id, company.name, company.profileImage,
+                        message.content, message.createdAt, message.readStatus)
+                .having(message.createdAt.eq(
+                        getLastCreatedAt(chatRoom)
+                ))
+                .orderBy(message.createdAt.max().asc())
+                .fetch();
+
+        Long count = getPageCount(customer, chatRoom);
 
         return new PageImpl<>(chatRooms, pageable, count);
     }

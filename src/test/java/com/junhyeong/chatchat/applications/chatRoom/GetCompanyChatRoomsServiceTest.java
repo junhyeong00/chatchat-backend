@@ -16,16 +16,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class GetChatRoomsServiceTest {
+class GetCompanyChatRoomsServiceTest {
     private CompanyRepository companyRepository;
     private ChatRoomRepository chatRoomRepository;
-    private GetChatRoomsService getChatRoomsService;
+    private GetCompanyChatRoomsService getChatRoomsService;
 
     @BeforeEach
     void setUp() {
         companyRepository = mock(CompanyRepository.class);
         chatRoomRepository = mock(ChatRoomRepository.class);
-        getChatRoomsService = new GetChatRoomsService(companyRepository, chatRoomRepository);
+        getChatRoomsService = new GetCompanyChatRoomsService(companyRepository, chatRoomRepository);
     }
 
     @Test

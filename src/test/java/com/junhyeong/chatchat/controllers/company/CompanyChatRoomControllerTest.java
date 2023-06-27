@@ -1,8 +1,7 @@
 package com.junhyeong.chatchat.controllers.company;
 
-import com.junhyeong.chatchat.applications.chatRoom.GetChatRoomService;
-import com.junhyeong.chatchat.applications.chatRoom.GetChatRoomsService;
-import com.junhyeong.chatchat.controllers.company.ChatRoomController;
+import com.junhyeong.chatchat.applications.chatRoom.GetCompanyChatRoomService;
+import com.junhyeong.chatchat.applications.chatRoom.GetCompanyChatRoomsService;
 import com.junhyeong.chatchat.dtos.ChatRoomDto;
 import com.junhyeong.chatchat.exceptions.ChatRoomNotFound;
 import com.junhyeong.chatchat.exceptions.CustomerNotFound;
@@ -23,16 +22,16 @@ import java.util.List;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ChatRoomController.class)
-class ChatRoomControllerTest {
+@WebMvcTest(CompanyChatRoomController.class)
+class CompanyChatRoomControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private GetChatRoomsService getChatRoomsService;
+    private GetCompanyChatRoomsService getChatRoomsService;
 
     @MockBean
-    private GetChatRoomService getChatRoomService;
+    private GetCompanyChatRoomService getChatRoomService;
 
     @SpyBean
     private JwtUtil jwtUtil;

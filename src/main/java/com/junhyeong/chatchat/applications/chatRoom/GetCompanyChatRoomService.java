@@ -19,16 +19,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class GetChatRoomService {
+public class GetCompanyChatRoomService {
     private final CompanyRepository companyRepository;
     private final CustomerRepository customerRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final MessageRepository messageRepository;
 
-    public GetChatRoomService(CompanyRepository companyRepository,
-                              CustomerRepository customerRepository,
-                              ChatRoomRepository chatRoomRepository,
-                              MessageRepository messageRepository) {
+    public GetCompanyChatRoomService(CompanyRepository companyRepository,
+                                     CustomerRepository customerRepository,
+                                     ChatRoomRepository chatRoomRepository,
+                                     MessageRepository messageRepository) {
         this.companyRepository = companyRepository;
         this.customerRepository = customerRepository;
         this.chatRoomRepository = chatRoomRepository;

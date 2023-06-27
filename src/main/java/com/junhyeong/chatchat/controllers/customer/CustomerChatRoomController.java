@@ -1,8 +1,6 @@
-package com.junhyeong.chatchat.controllers.company;
+package com.junhyeong.chatchat.controllers.customer;
 
-import com.junhyeong.chatchat.applications.chatRoom.GetChatRoomService;
-import com.junhyeong.chatchat.applications.chatRoom.GetChatRoomsService;
-import com.junhyeong.chatchat.dtos.ChatRoomDetailDto;
+import com.junhyeong.chatchat.applications.chatRoom.GetCustomerChatRoomsService;
 import com.junhyeong.chatchat.dtos.ChatRoomDto;
 import com.junhyeong.chatchat.dtos.ChatRoomsDto;
 import com.junhyeong.chatchat.dtos.PageDto;
@@ -14,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,15 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("company/chatrooms")
-public class ChatRoomController {
-    private final GetChatRoomsService getChatRoomsService;
-    private final GetChatRoomService getChatRoomService;
+@RequestMapping("customer/chatrooms")
+public class CustomerChatRoomController {
+    private final GetCustomerChatRoomsService getChatRoomsService;
 
-    public ChatRoomController(GetChatRoomsService getChatRoomsService,
-                              GetChatRoomService getChatRoomService) {
+    public CustomerChatRoomController(GetCustomerChatRoomsService getChatRoomsService) {
         this.getChatRoomsService = getChatRoomsService;
-        this.getChatRoomService = getChatRoomService;
     }
 
     @GetMapping
@@ -47,14 +41,6 @@ public class ChatRoomController {
         PageDto pageDto = new PageDto(page, found.getTotalPages());
 
         return new ChatRoomsDto(chatRooms, pageDto);
-    }
-
-    @GetMapping("{id}")
-    public ChatRoomDetailDto chatRoomDetail(
-            @RequestAttribute Username username,
-            @PathVariable("id") Long chatRoomId
-    ) {
-        return getChatRoomService.chatRoomDetail(username, chatRoomId);
     }
 
     @ExceptionHandler(Unauthorized.class)

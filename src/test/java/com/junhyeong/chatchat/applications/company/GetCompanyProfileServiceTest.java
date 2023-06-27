@@ -1,6 +1,7 @@
 package com.junhyeong.chatchat.applications.company;
 
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
+import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
 import com.junhyeong.chatchat.repositories.company.CompanyRepository;
@@ -38,9 +39,9 @@ class GetCompanyProfileServiceTest {
         Username invalidUserName = new Username("xxx");
 
         given(companyRepository.findByUsername(invalidUserName))
-                .willThrow(CompanyNotFound.class);
+                .willThrow(Unauthorized.class);
 
-        assertThrows(CompanyNotFound.class,
+        assertThrows(Unauthorized.class,
                 () ->  getCompanyProfileService.find(invalidUserName));
     }
 }

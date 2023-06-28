@@ -81,7 +81,7 @@ public class Company {
         this.username = username;
         this.name = name;
         this.description = new Description("");
-        this.profileImage = new Image("기본 이미지");
+        this.profileImage = new Image(Image.DEFAULT_PROFILE_IMAGE);
         this.profileVisibility = ProfileVisibility.HIDDEN;
     }
 
@@ -91,7 +91,7 @@ public class Company {
                 username,
                 new Name("악덕기업"),
                 new Description("악덕기업입니다"),
-                new Image("이미지"));
+                new Image(Image.DEFAULT_PROFILE_IMAGE));
     }
 
     public static Company fake(Username username, Name name) {
@@ -100,7 +100,7 @@ public class Company {
                 username,
                 name,
                 new Description("악덕기업입니다"),
-                new Image("이미지"));
+                new Image(Image.DEFAULT_PROFILE_IMAGE));
     }
 
     public void changePassword(Password password, PasswordEncoder passwordEncoder) {

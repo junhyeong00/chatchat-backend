@@ -6,6 +6,9 @@ import java.util.Objects;
 
 @Embeddable
 public class Image {
+    public static final String DEFAULT_PROFILE_IMAGE
+            = "https://chatchat-bucket.s3.ap-northeast-2.amazonaws.com/default-profile-image.png";
+
     @Column(name = "image")
     private String value;
 

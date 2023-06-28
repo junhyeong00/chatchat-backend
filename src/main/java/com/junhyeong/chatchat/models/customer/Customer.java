@@ -58,7 +58,7 @@ public class Customer {
     public Customer(Username username, Name name) {
         this.username = username;
         this.name = name;
-        this.profileImage = new Image("기본이미지");
+        this.profileImage = new Image(Image.DEFAULT_PROFILE_IMAGE);
     }
 
     public static Customer fake(Username username) {

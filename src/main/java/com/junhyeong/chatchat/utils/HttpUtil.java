@@ -12,7 +12,7 @@ public class HttpUtil {
         return ResponseCookie.from(cookieName, cookieValue)
                 .httpOnly(true)
                 .path("/")
-                .sameSite("None")
+                .sameSite("Lax")
                 .secure(true)
                 .build();
     }

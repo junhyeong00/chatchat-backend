@@ -9,12 +9,11 @@ import java.nio.charset.StandardCharsets;
 
 public class HttpUtil {
     public ResponseCookie generateHttpOnlyCookie(String cookieName, String cookieValue) {
-        String encodedCookieValue = URLEncoder.encode(cookieValue, StandardCharsets.UTF_8);
-
-        return ResponseCookie.from(cookieName, encodedCookieValue)
+        return ResponseCookie.from(cookieName, cookieValue)
                 .httpOnly(true)
                 .path("/")
-                .sameSite("Lax")
+                .sameSite("None")
+                .secure(true)
                 .build();
     }
 

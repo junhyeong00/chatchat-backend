@@ -2,12 +2,14 @@ package com.junhyeong.chatchat.models.autoReply;
 
 import com.junhyeong.chatchat.dtos.AutoReplyDto;
 import com.junhyeong.chatchat.dtos.CreateAutoReplyResultDto;
+import com.junhyeong.chatchat.exceptions.NotHaveEditAutoReplyAuthority;
 import com.junhyeong.chatchat.models.commom.Username;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class AutoReply {
@@ -62,5 +64,16 @@ public class AutoReply {
 
     public AutoReplyDto toDto() {
         return new AutoReplyDto(id, question.value(), answer.value());
+    }
+
+    public void isWriter(Username username) {
+        if (!Objects.equals(companyUsername, username)) {
+            throw new NotHaveEditAutoReplyAuthority();
+        }
+    }
+
+    public void edit(Question question, Answer answer) {
+        this.question = question;
+        this.answer = answer;
     }
 }

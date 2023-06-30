@@ -1,6 +1,7 @@
 package com.junhyeong.chatchat.models.autoReply;
 
 import com.junhyeong.chatchat.dtos.AutoReplyDto;
+import com.junhyeong.chatchat.dtos.CreateAutoReplyResultDto;
 import com.junhyeong.chatchat.models.commom.Username;
 
 import javax.persistence.Embedded;

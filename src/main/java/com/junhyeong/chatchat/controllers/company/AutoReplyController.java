@@ -1,6 +1,7 @@
 package com.junhyeong.chatchat.controllers.company;
 
 import com.junhyeong.chatchat.applications.autoReply.CreateAutoReplyService;
+import com.junhyeong.chatchat.applications.autoReply.DeleteAutoReplyService;
 import com.junhyeong.chatchat.applications.autoReply.EditAutoReplyService;
 import com.junhyeong.chatchat.applications.autoReply.GetAutoRepliesService;
 import com.junhyeong.chatchat.dtos.AutoRepliesDto;
@@ -13,12 +14,14 @@ import com.junhyeong.chatchat.dtos.EditAutoReplyRequestDto;
 import com.junhyeong.chatchat.exceptions.AutoReplyNotFound;
 import com.junhyeong.chatchat.exceptions.CreateAutoReplyFailed;
 import com.junhyeong.chatchat.exceptions.EditAutoReplyFailed;
+import com.junhyeong.chatchat.exceptions.NotHaveDeleteAutoReplyAuthority;
 import com.junhyeong.chatchat.exceptions.NotHaveEditAutoReplyAuthority;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.models.autoReply.AutoReply;
 import com.junhyeong.chatchat.models.commom.Username;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -38,13 +41,16 @@ public class AutoReplyController {
     private final GetAutoRepliesService getAutoRepliesService;
     private final CreateAutoReplyService createAutoReplyService;
     private final EditAutoReplyService editAutoReplyService;
+    private final DeleteAutoReplyService deleteAutoReplyService;
 
     public AutoReplyController(GetAutoRepliesService getAutoRepliesService,
                                CreateAutoReplyService createAutoReplyService,
-                               EditAutoReplyService editAutoReplyService) {
+                               EditAutoReplyService editAutoReplyService,
+                               DeleteAutoReplyService deleteAutoReplyService) {
         this.getAutoRepliesService = getAutoRepliesService;
         this.createAutoReplyService = createAutoReplyService;
         this.editAutoReplyService = editAutoReplyService;
+        this.deleteAutoReplyService = deleteAutoReplyService;
     }
 
     @GetMapping
@@ -78,6 +84,7 @@ public class AutoReplyController {
     }
 
     @PatchMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void edit(
             @RequestAttribute Username username,
             @PathVariable Long id,
@@ -98,6 +105,15 @@ public class AutoReplyController {
         }
     }
 
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(
+            @RequestAttribute Username username,
+            @PathVariable Long id
+    ) {
+        deleteAutoReplyService.delete(username, id);
+    }
+
     @ExceptionHandler(Unauthorized.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String unauthorized(Exception e) {
@@ -113,6 +129,12 @@ public class AutoReplyController {
     @ExceptionHandler(NotHaveEditAutoReplyAuthority.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public String notHaveEditAutoReplyAuthority(Exception exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(NotHaveDeleteAutoReplyAuthority.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String notHaveDeleteAutoReplyAuthority(Exception exception) {
         return exception.getMessage();
     }
 

@@ -30,11 +30,10 @@ public class EditAutoReplyService {
         AutoReply autoReply = autoReplyRepository.findById(editAutoReplyRequest.getAutoReplyId())
                 .orElseThrow(AutoReplyNotFound::new);
 
-        autoReply.isWriter(company.username());
-
         autoReply.edit(
                 editAutoReplyRequest.getQuestion(),
-                editAutoReplyRequest.getAnswer()
+                editAutoReplyRequest.getAnswer(),
+                username
         );
     }
 }

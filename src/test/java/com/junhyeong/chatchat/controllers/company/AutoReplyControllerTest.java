@@ -1,11 +1,13 @@
 package com.junhyeong.chatchat.controllers.company;
 
 import com.junhyeong.chatchat.applications.autoReply.CreateAutoReplyService;
+import com.junhyeong.chatchat.applications.autoReply.DeleteAutoReplyService;
 import com.junhyeong.chatchat.applications.autoReply.EditAutoReplyService;
 import com.junhyeong.chatchat.applications.autoReply.GetAutoRepliesService;
 import com.junhyeong.chatchat.dtos.CreateAutoReplyRequest;
 import com.junhyeong.chatchat.dtos.EditAutoReplyRequest;
 import com.junhyeong.chatchat.exceptions.AutoReplyNotFound;
+import com.junhyeong.chatchat.exceptions.NotHaveDeleteAutoReplyAuthority;
 import com.junhyeong.chatchat.exceptions.NotHaveEditAutoReplyAuthority;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.models.autoReply.AutoReply;
@@ -41,6 +43,9 @@ class AutoReplyControllerTest {
 
     @MockBean
     private EditAutoReplyService editAutoReplyService;
+
+    @MockBean
+    private DeleteAutoReplyService deleteAutoReplyService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -156,7 +161,7 @@ class AutoReplyControllerTest {
                                 "\"question\": \"질문\", " +
                                 "\"answer\": \"답변\"" +
                                 "}"))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -254,5 +259,65 @@ class AutoReplyControllerTest {
                                 "\"answer\": \"\"" +
                                 "}"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void delete() throws Exception {
+        Username username = new Username("company123");
+        String token = jwtUtil.encode(username);
+
+        Long autoReplyId = 1L;
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/auto-replies/%d", autoReplyId))
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteWithUnauthorized() throws Exception {
+        Username invalidUsername = new Username("xxx");
+        String token = jwtUtil.encode(invalidUsername);
+
+        Long autoReplyId = 1L;
+
+        doAnswer(invocation -> {
+            throw new Unauthorized();
+        }).when(deleteAutoReplyService).delete(any(),any());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/auto-replies/%d", autoReplyId))
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void deleteWithNotHaveDeleteAutoReplyAuthority() throws Exception {
+        Username invalidUsername = new Username("xxx");
+        String token = jwtUtil.encode(invalidUsername);
+
+        Long autoReplyId = 1L;
+
+        doAnswer(invocation -> {
+            throw new NotHaveDeleteAutoReplyAuthority();
+        }).when(deleteAutoReplyService).delete(any(),any());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/auto-replies/%d", autoReplyId))
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void deleteWithAutoReplyNotFound() throws Exception {
+        Username invalidUsername = new Username("xxx");
+        String token = jwtUtil.encode(invalidUsername);
+
+        Long autoReplyId = 999L;
+
+        doAnswer(invocation -> {
+            throw new AutoReplyNotFound();
+        }).when(deleteAutoReplyService).delete(any(),any());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/auto-replies/%d", autoReplyId))
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isNotFound());
     }
 }

@@ -1,12 +1,15 @@
 package com.junhyeong.chatchat.models.autoReply;
 
 import com.junhyeong.chatchat.dtos.AutoReplyDto;
-import com.junhyeong.chatchat.dtos.CreateAutoReplyResultDto;
+import com.junhyeong.chatchat.exceptions.NotHaveDeleteAutoReplyAuthority;
 import com.junhyeong.chatchat.exceptions.NotHaveEditAutoReplyAuthority;
+import com.junhyeong.chatchat.models.commom.Status;
 import com.junhyeong.chatchat.models.commom.Username;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Objects;
@@ -26,6 +29,9 @@ public class AutoReply {
     @Embedded
     private Answer answer;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     public AutoReply() {
     }
 
@@ -34,12 +40,14 @@ public class AutoReply {
         this.companyUsername = companyUsername;
         this.question = question;
         this.answer = answer;
+        this.status = Status.ACTIVE;
     }
 
     public AutoReply(Username companyUsername, Question question, Answer answer) {
         this.companyUsername = companyUsername;
         this.question = question;
         this.answer = answer;
+        this.status = Status.ACTIVE;
     }
 
     public static AutoReply fake(Username username) {
@@ -66,14 +74,24 @@ public class AutoReply {
         return new AutoReplyDto(id, question.value(), answer.value());
     }
 
-    public void isWriter(Username username) {
-        if (!Objects.equals(companyUsername, username)) {
-            throw new NotHaveEditAutoReplyAuthority();
-        }
+    public boolean isWriter(Username username) {
+        return Objects.equals(companyUsername, username);
     }
 
-    public void edit(Question question, Answer answer) {
+    public void edit(Question question, Answer answer, Username username) {
+        if (!isWriter(username)) {
+            throw new NotHaveEditAutoReplyAuthority();
+        }
+
         this.question = question;
         this.answer = answer;
+    }
+
+    public void delete(Username username) {
+        if (!isWriter(username)) {
+            throw new NotHaveDeleteAutoReplyAuthority();
+        }
+
+        this.status = Status.DELETED;
     }
 }

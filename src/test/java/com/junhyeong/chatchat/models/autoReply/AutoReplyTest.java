@@ -4,6 +4,7 @@ import com.junhyeong.chatchat.exceptions.NotHaveEditAutoReplyAuthority;
 import com.junhyeong.chatchat.models.commom.Username;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -14,7 +15,7 @@ class AutoReplyTest {
 
         AutoReply autoReply = AutoReply.fake(username);
 
-        assertDoesNotThrow(() -> autoReply.isWriter(username));
+        assertThat(autoReply.isWriter(username)).isTrue();
     }
 
     @Test
@@ -24,7 +25,6 @@ class AutoReplyTest {
         Username another = new Username("another");
         AutoReply autoReply = AutoReply.fake(another);
 
-        assertThrows(NotHaveEditAutoReplyAuthority.class,
-                () -> autoReply.isWriter(username));
+        assertThat(autoReply.isWriter(username)).isFalse();
     }
 }

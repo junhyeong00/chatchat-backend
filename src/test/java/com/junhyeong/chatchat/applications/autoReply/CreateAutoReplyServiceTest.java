@@ -1,6 +1,7 @@
 package com.junhyeong.chatchat.applications.autoReply;
 
 import com.junhyeong.chatchat.dtos.CreateAutoReplyRequest;
+import com.junhyeong.chatchat.exceptions.ExceededNumberAutoReply;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.models.autoReply.AutoReply;
 import com.junhyeong.chatchat.models.autoReply.Question;
@@ -44,6 +45,9 @@ class CreateAutoReplyServiceTest {
 
         AutoReply autoReply = AutoReply.fake(username);
 
+        given(autoReplyRepository.countByUsername(username))
+                .willReturn(1L);
+
         given(autoReplyRepository.save(any(AutoReply.class)))
                 .willReturn(autoReply);
 
@@ -63,5 +67,21 @@ class CreateAutoReplyServiceTest {
 
         assertThrows(Unauthorized.class,
                 () -> createAutoReplyService.create(invalidUsername, createAutoReplyRequest));
+    }
+
+    @Test
+    void createWithExceededNumberAutoReply() {
+        Username username = new Username("company123");
+
+        given(companyRepository.findByUsername(username))
+                .willReturn(Optional.of(Company.fake(username)));
+
+        CreateAutoReplyRequest createAutoReplyRequest = CreateAutoReplyRequest.fake(new Question("질문"));
+
+        given(autoReplyRepository.countByUsername(username))
+                .willReturn(6L);
+
+        assertThrows(ExceededNumberAutoReply.class,
+                () -> createAutoReplyService.create(username, createAutoReplyRequest));
     }
 }

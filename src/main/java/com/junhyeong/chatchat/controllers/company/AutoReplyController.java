@@ -14,6 +14,7 @@ import com.junhyeong.chatchat.dtos.EditAutoReplyRequestDto;
 import com.junhyeong.chatchat.exceptions.AutoReplyNotFound;
 import com.junhyeong.chatchat.exceptions.CreateAutoReplyFailed;
 import com.junhyeong.chatchat.exceptions.EditAutoReplyFailed;
+import com.junhyeong.chatchat.exceptions.ExceededNumberAutoReply;
 import com.junhyeong.chatchat.exceptions.NotHaveDeleteAutoReplyAuthority;
 import com.junhyeong.chatchat.exceptions.NotHaveEditAutoReplyAuthority;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -76,8 +78,10 @@ public class AutoReplyController {
             Long created = createAutoReplyService.create(username, createAutoReplyRequest);
 
             return new CreateAutoReplyResultDto(created);
-        } catch (Unauthorized unauthorized) {
+        } catch (Unauthorized e) {
             throw new Unauthorized();
+        } catch (ExceededNumberAutoReply e) {
+            throw new ExceededNumberAutoReply();
         } catch (Exception exception) {
             throw new CreateAutoReplyFailed(exception.getMessage());
         }
@@ -117,6 +121,13 @@ public class AutoReplyController {
     @ExceptionHandler(Unauthorized.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String unauthorized(Exception e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(ExceededNumberAutoReply.class)
+    public String exceededNumberAutoReply(Exception e, HttpServletResponse response) {
+        response.setStatus(440);
+
         return e.getMessage();
     }
 

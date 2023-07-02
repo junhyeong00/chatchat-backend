@@ -1,6 +1,7 @@
 package com.junhyeong.chatchat.applications.autoReply;
 
 import com.junhyeong.chatchat.dtos.CreateAutoReplyRequest;
+import com.junhyeong.chatchat.exceptions.ExceededNumberAutoReply;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.models.autoReply.Answer;
 import com.junhyeong.chatchat.models.autoReply.AutoReply;
@@ -34,8 +35,18 @@ public class CreateAutoReplyService {
                 createAutoReplyRequest.getAnswer()
         );
 
+        Long autoReplyCount = autoReplyRepository.countByUsername(username);
+
+        validateCount(autoReplyCount);
+
         AutoReply saved = autoReplyRepository.save(autoReply);
 
         return saved.id();
+    }
+
+    private void validateCount(Long autoReplyCount) {
+        if (autoReplyCount >= 6) {
+            throw new ExceededNumberAutoReply();
+        }
     }
 }

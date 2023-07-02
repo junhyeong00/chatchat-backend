@@ -41,8 +41,7 @@ public class IssueTokenService {
                 .orElseThrow(RefreshTokenNotFound::new);
 
         String accessToken = refreshToken.getNextAccessToken(jwtUtil);
-        String newRefreshToken = refreshToken.getNextVersion(jwtUtil);
 
-        return new TokenDto(accessToken, newRefreshToken);
+        return new TokenDto(accessToken, token);
     }
 }

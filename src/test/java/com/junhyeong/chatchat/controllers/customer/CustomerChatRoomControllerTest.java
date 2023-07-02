@@ -5,7 +5,6 @@ import com.junhyeong.chatchat.applications.chatRoom.GetCustomerChatRoomsService;
 import com.junhyeong.chatchat.dtos.ChatRoomDto;
 import com.junhyeong.chatchat.exceptions.ChatRoomNotFound;
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
-import com.junhyeong.chatchat.exceptions.CustomerNotFound;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.utils.JwtUtil;
 import org.junit.jupiter.api.Test;
@@ -69,9 +68,11 @@ class CustomerChatRoomControllerTest {
         Username invalidUsername = new Username("xxx");
         String token = jwtUtil.encode(invalidUsername);
 
+        int page = 1;
+
         Long chatRoomId = 999L;
 
-        given(getChatRoomService.chatRoomDetail(invalidUsername, chatRoomId))
+        given(getChatRoomService.chatRoomDetail(invalidUsername, chatRoomId, page))
                 .willThrow(ChatRoomNotFound.class);
 
         mockMvc.perform(MockMvcRequestBuilders.get(String.format("/customer/chatrooms/%d", chatRoomId))
@@ -84,9 +85,11 @@ class CustomerChatRoomControllerTest {
         Username username = new Username("customer123");
         String token = jwtUtil.encode(username);
 
+        int page = 1;
+
         Long chatRoomId = 999L;
 
-        given(getChatRoomService.chatRoomDetail(username, chatRoomId))
+        given(getChatRoomService.chatRoomDetail(username, chatRoomId, page))
                 .willThrow(ChatRoomNotFound.class);
 
         mockMvc.perform(MockMvcRequestBuilders.get(String.format("/customer/chatrooms/%d", chatRoomId))
@@ -99,9 +102,11 @@ class CustomerChatRoomControllerTest {
         Username username = new Username("customer123");
         String token = jwtUtil.encode(username);
 
+        int page = 1;
+
         Long chatRoomId = 1L;
 
-        given(getChatRoomService.chatRoomDetail(username, chatRoomId))
+        given(getChatRoomService.chatRoomDetail(username, chatRoomId, page))
                 .willThrow(CompanyNotFound.class);
 
         mockMvc.perform(MockMvcRequestBuilders.get(String.format("/customer/chatrooms/%d", chatRoomId))

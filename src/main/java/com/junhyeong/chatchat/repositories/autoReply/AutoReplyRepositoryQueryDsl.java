@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface AutoReplyRepositoryQueryDsl {
     List<AutoReply> findAllByCompanyUsername(Username username);
-
+    Long countByUsername(Username username);
 }

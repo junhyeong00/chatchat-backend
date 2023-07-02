@@ -28,4 +28,17 @@ public class AutoReplyRepositoryImpl implements AutoReplyRepositoryQueryDsl {
                 ))
                 .fetch();
     }
+
+    @Override
+    public Long countByUsername(Username username) {
+        QAutoReply autoReply = QAutoReply.autoReply;
+
+        return queryFactory
+                .select(autoReply.count())
+                .from(autoReply)
+                .where(autoReply.companyUsername.eq(username).and(
+                        autoReply.status.ne(Status.DELETED)
+                ))
+                .fetchOne();
+    }
 }

@@ -4,6 +4,7 @@ import com.junhyeong.chatchat.dtos.ChatRoomDetailDto;
 import com.junhyeong.chatchat.dtos.CompanyDetailDto;
 import com.junhyeong.chatchat.dtos.CompanyProfileDto;
 import com.junhyeong.chatchat.dtos.MessageDto;
+import com.junhyeong.chatchat.dtos.PageDto;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Image;
 import com.junhyeong.chatchat.models.commom.Name;
@@ -166,13 +167,13 @@ public class Company {
                 profileImage.value());
     }
 
-    public ChatRoomDetailDto toRoomDetailDto(Long chatRoomId, List<MessageDto> messages) {
+    public ChatRoomDetailDto toRoomDetailDto(Long chatRoomId, List<MessageDto> messages, PageDto page) {
         return new ChatRoomDetailDto(
                 chatRoomId,
                 this.id,
                 this.name.value(),
                 this.profileImage.value(),
-                messages
-        );
+                messages,
+                page);
     }
 }

@@ -13,15 +13,18 @@ import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
 import com.junhyeong.chatchat.repositories.message.MessageRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class GetCompanyChatRoomServiceTest {
+class
+GetCompanyChatRoomServiceTest {
     private CompanyRepository companyRepository;
     private CustomerRepository customerRepository;
     private ChatRoomRepository chatRoomRepository;
@@ -42,6 +45,7 @@ class GetCompanyChatRoomServiceTest {
     void chatRoomDetail() {
         Username username = new Username("company123");
         Long chatRoomId = 1L;
+        int page = 1;
 
         given(companyRepository.findByUsername(username))
                 .willReturn(Optional.of(Company.fake(username)));
@@ -59,10 +63,10 @@ class GetCompanyChatRoomServiceTest {
                 Message.fake(customerUsername, new Content("내용1"))
         );
 
-        given(messageRepository.findAllGeneralMessagesByChatRoomId(chatRoomId))
-                .willReturn(messages);
+        given(messageRepository.findAllGeneralMessagesByChatRoomId(any(), any()))
+                .willReturn(new PageImpl<>(messages));
 
-        ChatRoomDetailDto found = getChatRoomService.chatRoomDetail(username, chatRoomId);
+        ChatRoomDetailDto found = getChatRoomService.chatRoomDetail(username, chatRoomId, page);
 
         assertThat(found).isNotNull();
         assertThat(found.getId()).isEqualTo(chatRoomId);

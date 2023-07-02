@@ -52,9 +52,10 @@ public class CompanyChatRoomController {
     @GetMapping("{id}")
     public ChatRoomDetailDto chatRoomDetail(
             @RequestAttribute Username username,
-            @PathVariable("id") Long chatRoomId
+            @PathVariable("id") Long chatRoomId,
+            @RequestParam(required = false, defaultValue = "1") Integer page
     ) {
-        return getChatRoomService.chatRoomDetail(username, chatRoomId);
+        return getChatRoomService.chatRoomDetail(username, chatRoomId, page);
     }
 
     @ExceptionHandler(Unauthorized.class)

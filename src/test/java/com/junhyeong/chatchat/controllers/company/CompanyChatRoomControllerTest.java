@@ -68,9 +68,11 @@ class CompanyChatRoomControllerTest {
         Username username = new Username("xxx");
         String token = jwtUtil.encode(username);
 
+        int page = 1;
+
         Long chatRoomId = 1L;
 
-        given(getChatRoomService.chatRoomDetail(username, chatRoomId))
+        given(getChatRoomService.chatRoomDetail(username, chatRoomId, page))
                 .willThrow(ChatRoomNotFound.class);
 
         mockMvc.perform(MockMvcRequestBuilders.get(String.format("/company/chatrooms/%d", chatRoomId))
@@ -83,9 +85,11 @@ class CompanyChatRoomControllerTest {
         Username username = new Username("company123");
         String token = jwtUtil.encode(username);
 
+        int page = 1;
+
         Long chatRoomId = 1L;
 
-        given(getChatRoomService.chatRoomDetail(username, chatRoomId))
+        given(getChatRoomService.chatRoomDetail(username, chatRoomId, page))
                 .willThrow(CustomerNotFound.class);
 
         mockMvc.perform(MockMvcRequestBuilders.get(String.format("/company/chatrooms/%d", chatRoomId))

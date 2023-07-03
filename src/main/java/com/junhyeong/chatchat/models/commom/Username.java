@@ -17,8 +17,8 @@ public class Username implements Serializable {
         this.value = value;
     }
 
-    public static Username of(String userName) {
-        return new Username(userName);
+    public static Username of(String username) {
+        return new Username(username);
     }
 
     public String value() {

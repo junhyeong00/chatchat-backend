@@ -23,11 +23,11 @@ public class IssueTokenService {
         this.jwtUtil = jwtUtil;
     }
 
-    public TokenDto issue(Username userName) {
-        String accessToken = jwtUtil.encode(userName);
+    public TokenDto issue(Username username) {
+        String accessToken = jwtUtil.encode(username);
         String refreshToken = jwtUtil.encode(UUID.randomUUID());
 
-        Token tokenEntity = Token.of(userName, refreshToken);
+        Token tokenEntity = Token.of(username, refreshToken);
 
         refreshTokenRepository.save(tokenEntity);
 

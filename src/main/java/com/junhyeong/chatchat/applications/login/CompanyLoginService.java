@@ -26,13 +26,13 @@ public class CompanyLoginService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public TokenDto login(Username userName, Password password) {
+    public TokenDto login(Username username, Password password) {
         try {
-            Company company = getCompanyService.find(userName);
+            Company company = getCompanyService.find(username);
 
             company.authenticate(password, passwordEncoder);
 
-            TokenDto tokenDto = issueTokenService.issue(userName);
+            TokenDto tokenDto = issueTokenService.issue(username);
 
             return tokenDto;
         } catch (Exception e) {

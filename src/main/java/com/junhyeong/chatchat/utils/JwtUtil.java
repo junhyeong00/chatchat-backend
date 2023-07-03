@@ -11,16 +11,16 @@ import java.util.UUID;
 
 public class JwtUtil {
     private final Algorithm algorithm;
-    private final Long ACCESS_TOKEN_VALIDATION_SECOND = 1000L * 60 * 30;
+    private final Long ACCESS_TOKEN_VALIDATION_SECOND = 1000L * 60 * 3;
     private final Long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 60 * 24 * 14;
 
     public JwtUtil(String secret) {
         this.algorithm = Algorithm.HMAC256(secret);
     }
 
-    public String encode(Username userName) {
+    public String encode(Username username) {
         return JWT.create()
-                .withClaim("username", userName.value())
+                .withClaim("username", username.value())
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDATION_SECOND))
                 .sign(algorithm);

@@ -13,20 +13,20 @@ import java.util.UUID;
 public class Token {
     @Id
     @Embedded
-    private Username userName;
+    private Username username;
 
     private String number;
 
     public Token() {
     }
 
-    public Token(Username userName, String number) {
-        this.userName = userName;
+    public Token(Username username, String number) {
+        this.username = username;
         this.number = number;
     }
 
-    public static Token of(Username userName, String token) {
-        return new Token(userName, token);
+    public static Token of(Username username, String token) {
+        return new Token(username, token);
     }
 
     @Override
@@ -41,20 +41,20 @@ public class Token {
 
         Token otherToken = (Token) object;
 
-        return Objects.equals(userName, otherToken.userName);
+        return Objects.equals(username, otherToken.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName);
+        return Objects.hash(username);
     }
 
-    public Username userName() {
-        return userName;
+    public Username username() {
+        return username;
     }
 
     public String getNextAccessToken(JwtUtil jwtUtil) {
-        return jwtUtil.encode(userName);
+        return jwtUtil.encode(username);
     }
 
     public String getNextVersion(JwtUtil jwtUtil) {

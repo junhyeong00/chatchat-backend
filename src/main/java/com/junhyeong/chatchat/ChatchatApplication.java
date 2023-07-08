@@ -35,7 +35,8 @@ public class ChatchatApplication {
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
 						.allowedMethods("*")
-						.allowedOriginPatterns("*")
+						.allowedOrigins("https://client.chatchat-web.site/",
+								"https://localhost:8080")
 						.allowCredentials(true);
 			}
 

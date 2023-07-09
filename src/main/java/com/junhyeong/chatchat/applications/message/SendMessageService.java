@@ -34,11 +34,6 @@ public class SendMessageService {
 
     @Transactional
     public void sendMessage(MessageRequest messageRequest) {
-        System.out.println(messageRequest.getChatRoomId());
-        System.out.println(messageRequest.getContent());
-        System.out.println(messageRequest.getRole());
-        System.out.println(messageRequest.getSenderId());
-
         Long senderId = messageRequest.getSenderId();
 
         Username username = switch (messageRequest.getRole()) {
@@ -57,10 +52,6 @@ public class SendMessageService {
         );
 
         Message saved = messageRepository.save(message);
-
-        System.out.println(saved.chatRoomId());
-        System.out.println(saved.id());
-        System.out.println(saved.createdAt());
 
         messagingTemplate.convertAndSend(
                 "/sub/chatrooms/" + saved.chatRoomId(),

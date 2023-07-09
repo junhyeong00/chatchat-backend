@@ -44,7 +44,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                         customer.profileImage,
                         message.content,
                         message.createdAt,
-                        getUnreadMessageCount(chatRoom)
+                        getUnreadMessageCount(chatRoom, company)
                         ))
                 .from(chatRoom)
                 .leftJoin(message)
@@ -84,7 +84,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                         company.profileImage,
                         message.content,
                         message.createdAt,
-                        getUnreadMessageCount(chatRoom)
+                        getUnreadMessageCount(chatRoom, customer)
                 ))
                 .from(chatRoom)
                 .leftJoin(message)
@@ -104,14 +104,16 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
         return new PageImpl<>(chatRooms, pageable, count);
     }
 
-    private Expression<Long> getUnreadMessageCount(QChatRoom chatRoom) {
+    private Expression<Long> getUnreadMessageCount(QChatRoom chatRoom, Username username) {
         QMessage message = QMessage.message;
 
         return ExpressionUtils.as(
                 JPAExpressions.select(ExpressionUtils.count(message.id))
                         .from(message)
-                        .where(message.chatRoomId.eq(chatRoom.id)
-                                .and(message.readStatus.eq(ReadStatus.UNREAD))),
+                        .where(message.chatRoomId.eq(chatRoom.id).and(
+                                message.readStatus.eq(ReadStatus.UNREAD)).and(
+                                        message.sender.username.ne(username)
+                        )),
                 "unreadMessageCount"
         );
     }

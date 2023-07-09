@@ -53,6 +53,7 @@ public class Message {
         this.content = content;
         this.type = type;
         this.readStatus = readStatus.UNREAD;
+        this.createdAt = LocalDateTime.now();
     }
 
     public static Message fake(Username username, Content content) {

@@ -18,6 +18,7 @@ import com.junhyeong.chatchat.repositories.message.MessageRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +43,7 @@ public class GetCustomerChatRoomService {
 
     @Transactional(readOnly = true)
     public ChatRoomDetailDto chatRoomDetail(Username username, Long chatRoomId, Integer page) {
-        Pageable pageable = PageRequest.of(page - 1, 20);
+        Pageable pageable = PageRequest.of(page - 1, 20, Sort.by("id"));
 
         Customer customer = customerRepository.findByUsername(username)
                 .orElseThrow(Unauthorized::new);

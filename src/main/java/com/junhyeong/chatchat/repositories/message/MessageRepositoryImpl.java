@@ -40,6 +40,9 @@ public class MessageRepositoryImpl implements MessageRepositoryQueryDsl {
                 .where(message.chatRoomId.eq(chatRoomId).and(
                         message.type.eq(MessageType.GENERAL)
                 ))
+                .orderBy(message.id.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         Long count = getPageCount(message, chatRoomId);

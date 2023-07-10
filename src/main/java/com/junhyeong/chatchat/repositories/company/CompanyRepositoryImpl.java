@@ -37,6 +37,8 @@ public class CompanyRepositoryImpl implements CompanyRepositoryQueryDsl {
                 .where(company.profileVisibility.eq(ProfileVisibility.VISIBLE)
                         .and(company.name.value.contains(keyword)))
                 .orderBy(company.registeredAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         Long count = getPageCount(company);

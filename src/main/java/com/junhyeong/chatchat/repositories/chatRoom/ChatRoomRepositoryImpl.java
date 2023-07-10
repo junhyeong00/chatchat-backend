@@ -64,6 +64,8 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                                 .otherwise(message.createdAt.max())
                                 .desc()
                 )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         Long count = getPageCount(company, chatRoom);
@@ -97,6 +99,8 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                         getLastCreatedAt(chatRoom)
                 ))
                 .orderBy(message.createdAt.max().asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         Long count = getPageCount(customer, chatRoom);

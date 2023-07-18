@@ -1,12 +1,18 @@
 package com.junhyeong.chatchat.controllers.company;
 
+import com.junhyeong.chatchat.applications.company.CreateCompanyService;
 import com.junhyeong.chatchat.applications.company.EditCompanyService;
 import com.junhyeong.chatchat.applications.company.GetCompanyProfileService;
 import com.junhyeong.chatchat.dtos.CompanyProfileDto;
+import com.junhyeong.chatchat.dtos.CreateCompanyRequest;
+import com.junhyeong.chatchat.dtos.CreateCompanyRequestDto;
 import com.junhyeong.chatchat.dtos.EditCompanyRequest;
 import com.junhyeong.chatchat.dtos.EditCompanyRequestDto;
+import com.junhyeong.chatchat.exceptions.CreateCompanyFailed;
+import com.junhyeong.chatchat.exceptions.CreateCustomerFailed;
 import com.junhyeong.chatchat.exceptions.EditCompanyFailed;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
+import com.junhyeong.chatchat.exceptions.UsernameAlreadyInUse;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
 import org.springframework.http.HttpStatus;
@@ -14,21 +20,27 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("companies")
 public class CompanyController {
     private final GetCompanyProfileService getCompanyProfileService;
+    private final CreateCompanyService createCompanyService;
     private final EditCompanyService editCompanyService;
 
     public CompanyController(GetCompanyProfileService getCompanyProfileService,
+                             CreateCompanyService createCompanyService,
                              EditCompanyService editCompanyService) {
         this.getCompanyProfileService = getCompanyProfileService;
+        this.createCompanyService = createCompanyService;
         this.editCompanyService = editCompanyService;
     }
 
@@ -39,6 +51,22 @@ public class CompanyController {
         Company company = getCompanyProfileService.find(username);
 
         return company.toProfileDto();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void create(
+            @Validated @RequestBody CreateCompanyRequestDto createCompanyRequestDto
+    ) {
+        try {
+            CreateCompanyRequest createCompanyRequest = CreateCompanyRequest.of(createCompanyRequestDto);
+
+            createCompanyService.create(createCompanyRequest);
+        } catch (UsernameAlreadyInUse e) {
+            throw new UsernameAlreadyInUse();
+        } catch (Exception e) {
+            throw new CreateCustomerFailed(e.getMessage());
+        }
     }
 
     @PatchMapping("me")
@@ -61,6 +89,19 @@ public class CompanyController {
     @ExceptionHandler(Unauthorized.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String unauthorized(Exception e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(UsernameAlreadyInUse.class)
+    public String usernameAlreadyInUse(Exception e, HttpServletResponse response) {
+        response.setStatus(480);
+
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(CreateCompanyFailed.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String createCompanyFailed(Exception e) {
         return e.getMessage();
     }
 

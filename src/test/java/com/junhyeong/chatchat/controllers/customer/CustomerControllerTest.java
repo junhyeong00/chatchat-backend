@@ -1,8 +1,10 @@
 package com.junhyeong.chatchat.controllers.customer;
 
+import com.junhyeong.chatchat.applications.customer.CreateCustomerService;
 import com.junhyeong.chatchat.applications.customer.EditCustomerService;
 import com.junhyeong.chatchat.applications.customer.GetCustomerProfileService;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
+import com.junhyeong.chatchat.exceptions.UsernameAlreadyInUse;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.customer.Customer;
 import com.junhyeong.chatchat.utils.JwtUtil;
@@ -27,6 +29,9 @@ class CustomerControllerTest {
 
     @MockBean
     private GetCustomerProfileService getCustomerProfileService;
+
+    @MockBean
+    private CreateCustomerService createCustomerService;
 
     @MockBean
     private EditCustomerService editCustomerService;
@@ -112,7 +117,7 @@ class CustomerControllerTest {
 
         doAnswer(invocation -> {
             throw new Unauthorized();
-        }).when(editCustomerService).edit(any(),any());
+        }).when(editCustomerService).edit(any(), any());
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/customers/me")
                         .header("Authorization", "Bearer " + token)
@@ -122,5 +127,93 @@ class CustomerControllerTest {
                                 "   \"imageUrl\":\"이미지\"" +
                                 "}"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void create() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/customers")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"name\":\"배준형\"," +
+                                "\"username\":\"jhbae0420\"," +
+                                "\"password\":\"Password1234!\"," +
+                                "\"confirmPassword\":\"Password1234!\"" +
+                                "}"))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void createWithBlankName() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/customers")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"name\":\"\"," +
+                                "\"username\":\"jhbae0420\"," +
+                                "\"password\":\"Password1234!\"," +
+                                "\"confirmPassword\":\"Password1234!\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createWithBlankUsername() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/customers")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"name\":\"배준형\"," +
+                                "\"username\":\"\"," +
+                                "\"password\":\"Password1234!\"," +
+                                "\"confirmPassword\":\"Password1234!\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createWithBlankPassword() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/customers")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"name\":\"배준형\"," +
+                                "\"username\":\"jhbae0420\"," +
+                                "\"password\":\"\"," +
+                                "\"confirmPassword\":\"Password1234!\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createWithBlankConfirmPassword() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/customers")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"name\":\"배준형\"," +
+                                "\"username\":\"jhbae0420\"," +
+                                "\"password\":\"Password1234!\"," +
+                                "\"confirmPassword\":\"\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createWithAlreadyExistingUserName() throws Exception {
+        doAnswer(invocation -> {
+            throw new UsernameAlreadyInUse();
+        }).when(createCustomerService).create(any());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/customers")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"name\":\"배준형\"," +
+                                "\"username\":\"jhbae0420\"," +
+                                "\"password\":\"Password1234!\"," +
+                                "\"confirmPassword\":\"Password1234!\"" +
+                                "}"))
+                .andExpect(status().is(480));
     }
 }

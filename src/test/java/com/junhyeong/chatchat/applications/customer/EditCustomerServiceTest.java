@@ -1,15 +1,10 @@
 package com.junhyeong.chatchat.applications.customer;
 
-import com.junhyeong.chatchat.applications.company.EditCompanyService;
-import com.junhyeong.chatchat.dtos.EditCompanyRequest;
 import com.junhyeong.chatchat.dtos.EditCustomerRequest;
-import com.junhyeong.chatchat.exceptions.CompanyNotFound;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.models.commom.Name;
 import com.junhyeong.chatchat.models.commom.Username;
-import com.junhyeong.chatchat.models.company.Company;
 import com.junhyeong.chatchat.models.customer.Customer;
-import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

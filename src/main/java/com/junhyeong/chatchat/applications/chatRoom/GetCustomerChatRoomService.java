@@ -56,7 +56,7 @@ public class GetCustomerChatRoomService {
 
         List<Message> all = messageRepository.findAllByChatRoomId(chatRoom.id());
 
-        Page<Message> found = messageRepository.findAllByChatRoomId(chatRoom.id(), pageable, Sort.by(""));
+        Page<Message> found = messageRepository.findAllByChatRoomId(chatRoom.id(), pageable);
 
         PageDto pageDto = new PageDto(page, found.getTotalPages());
 

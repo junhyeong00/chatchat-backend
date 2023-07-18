@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("token")
 public class TokenController {
     private final IssueTokenService issueTokenService;
     private final HttpUtil httpUtil;
@@ -30,7 +30,7 @@ public class TokenController {
         this.httpUtil = httpUtil;
     }
 
-    @PostMapping
+    @PostMapping("token")
     @ResponseStatus(HttpStatus.CREATED)
     public ReissuedTokenDto reissueToken(
             HttpServletResponse response,
@@ -49,11 +49,22 @@ public class TokenController {
         }
     }
 
+    @DeleteMapping("logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout(
+            HttpServletResponse response
+    ) {
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setMaxAge(0);
+
+        response.addCookie(cookie);
+    }
+
     @ExceptionHandler(ReissueTokenFailed.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String invalidToken(Exception exception, HttpServletResponse response) {
         Cookie cookie = new Cookie("refreshToken", null);
-        cookie.setMaxAge(0);;
+        cookie.setMaxAge(0);
 
         response.addCookie(cookie);
 

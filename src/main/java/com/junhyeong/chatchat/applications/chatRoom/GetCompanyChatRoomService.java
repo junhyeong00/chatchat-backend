@@ -21,7 +21,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GetCompanyChatRoomService {
@@ -40,7 +42,7 @@ public class GetCompanyChatRoomService {
         this.messageRepository = messageRepository;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ChatRoomDetailDto chatRoomDetail(Username username, Long chatRoomId, Integer page) {
         Pageable pageable = PageRequest.of(page - 1, 20);
 
@@ -61,7 +63,9 @@ public class GetCompanyChatRoomService {
         updateMessagesAsReadFromOthers(company.username(), all);
 
         List<MessageDto> messageDtos = messages.stream()
-                .map(Message::toDto).toList();
+                .map(Message::toDto).collect(Collectors.toList());
+
+        Collections.reverse(messageDtos);
 
         Customer customer = customerRepository.findByUsername(chatRoom.customer())
                 .orElseThrow(CustomerNotFound::new);

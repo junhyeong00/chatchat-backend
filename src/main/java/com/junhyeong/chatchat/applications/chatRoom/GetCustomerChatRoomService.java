@@ -22,7 +22,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GetCustomerChatRoomService {
@@ -41,9 +44,9 @@ public class GetCustomerChatRoomService {
         this.messageRepository = messageRepository;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ChatRoomDetailDto chatRoomDetail(Username username, Long chatRoomId, Integer page) {
-        Pageable pageable = PageRequest.of(page - 1, 20, Sort.by("id"));
+        Pageable pageable = PageRequest.of(page - 1, 20, Sort.by("id").descending());
 
         Customer customer = customerRepository.findByUsername(username)
                 .orElseThrow(Unauthorized::new);
@@ -62,7 +65,9 @@ public class GetCustomerChatRoomService {
         updateMessagesAsReadFromOthers(customer.username(), all);
 
         List<MessageDto> messageDtos = messages.stream()
-                .map(Message::toDto).toList();
+                .map(Message::toDto).collect(Collectors.toList());
+
+        Collections.reverse(messageDtos);
 
         Company company = companyRepository.findByUsername(chatRoom.company())
                 .orElseThrow(CompanyNotFound::new);

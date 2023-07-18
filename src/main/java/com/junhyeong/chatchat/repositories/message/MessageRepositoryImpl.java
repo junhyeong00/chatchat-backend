@@ -40,7 +40,7 @@ public class MessageRepositoryImpl implements MessageRepositoryQueryDsl {
                 .where(message.chatRoomId.eq(chatRoomId).and(
                         message.type.eq(MessageType.GENERAL)
                 ))
-                .orderBy(message.id.asc())
+                .orderBy(message.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

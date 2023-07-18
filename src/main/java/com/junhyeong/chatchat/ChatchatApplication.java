@@ -14,6 +14,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
 @SpringBootApplication
 public class ChatchatApplication {
 	@Value("${jwt.secret}")
@@ -65,5 +68,10 @@ public class ChatchatApplication {
 	@Bean
 	public HttpUtil httpUtil() {
 		return new HttpUtil();
+	}
+
+	@PostConstruct
+	public void started() {
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
 	}
 }

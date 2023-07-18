@@ -21,7 +21,6 @@ public class Password {
     }
 
     private void setValue(String value) {
-        System.out.println(value);
         Pattern pattern = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,}");
         Matcher matcher = pattern.matcher(value);
 

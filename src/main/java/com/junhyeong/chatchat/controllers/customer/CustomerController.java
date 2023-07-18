@@ -1,12 +1,17 @@
 package com.junhyeong.chatchat.controllers.customer;
 
+import com.junhyeong.chatchat.applications.customer.CreateCustomerService;
 import com.junhyeong.chatchat.applications.customer.EditCustomerService;
 import com.junhyeong.chatchat.applications.customer.GetCustomerProfileService;
+import com.junhyeong.chatchat.dtos.CreateCustomerRequest;
+import com.junhyeong.chatchat.dtos.CreateCustomerRequestDto;
 import com.junhyeong.chatchat.dtos.CustomerProfileDto;
 import com.junhyeong.chatchat.dtos.EditCustomerRequest;
 import com.junhyeong.chatchat.dtos.EditCustomerRequestDto;
+import com.junhyeong.chatchat.exceptions.CreateCustomerFailed;
 import com.junhyeong.chatchat.exceptions.EditCustomerFailed;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
+import com.junhyeong.chatchat.exceptions.UsernameAlreadyInUse;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.customer.Customer;
 import org.springframework.http.HttpStatus;
@@ -14,21 +19,27 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("customers")
 public class CustomerController {
     private final GetCustomerProfileService getCustomerProfileService;
+    private final CreateCustomerService createCustomerService;
     private final EditCustomerService editCustomerService;
 
     public CustomerController(GetCustomerProfileService getCustomerProfileService,
+                              CreateCustomerService createCustomerService,
                               EditCustomerService editCustomerService) {
         this.getCustomerProfileService = getCustomerProfileService;
+        this.createCustomerService = createCustomerService;
         this.editCustomerService = editCustomerService;
     }
 
@@ -39,6 +50,22 @@ public class CustomerController {
         Customer customer = getCustomerProfileService.find(username);
 
         return customer.toProfileDto();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void create(
+            @Validated @RequestBody CreateCustomerRequestDto createCustomerRequestDto
+    ) {
+        try {
+            CreateCustomerRequest createCustomerRequest = CreateCustomerRequest.of(createCustomerRequestDto);
+
+            createCustomerService.create(createCustomerRequest);
+        } catch (UsernameAlreadyInUse e) {
+            throw new UsernameAlreadyInUse();
+        } catch (Exception e) {
+            throw new CreateCustomerFailed(e.getMessage());
+        }
     }
 
     @PatchMapping("me")
@@ -61,6 +88,19 @@ public class CustomerController {
     @ExceptionHandler(Unauthorized.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String unauthorized(Exception e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(UsernameAlreadyInUse.class)
+    public String usernameAlreadyInUse(Exception e, HttpServletResponse response) {
+        response.setStatus(480);
+
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(CreateCustomerFailed.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String createCustomerFailed(Exception e) {
         return e.getMessage();
     }
 

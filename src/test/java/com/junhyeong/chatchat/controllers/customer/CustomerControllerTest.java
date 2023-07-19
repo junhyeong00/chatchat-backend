@@ -1,6 +1,7 @@
 package com.junhyeong.chatchat.controllers.customer;
 
 import com.junhyeong.chatchat.applications.customer.CreateCustomerService;
+import com.junhyeong.chatchat.applications.customer.DeleteCustomerService;
 import com.junhyeong.chatchat.applications.customer.EditCustomerPasswordService;
 import com.junhyeong.chatchat.applications.customer.EditCustomerService;
 import com.junhyeong.chatchat.applications.customer.GetCustomerProfileService;
@@ -42,6 +43,9 @@ class CustomerControllerTest {
 
     @MockBean
     private EditCustomerPasswordService editCustomerPasswordService;
+
+    @MockBean
+    private DeleteCustomerService deleteCustomerService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -372,6 +376,58 @@ class CustomerControllerTest {
                                 "\"password\":\"Xxxxxx321!\"," +
                                 "\"newPassword\":\"newPassword1234!\"," +
                                 "\"confirmNewPassword\":\"newPassword1234!\"" +
+                                "}"))
+                .andExpect(status().is(481));
+    }
+
+    void delete() throws Exception {
+        Username username = new Username("customer123");
+        String token = jwtUtil.encode(username);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/customers/me")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"password\":\"Password1234!\"" +
+                                "}"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteWithUnauthorized() throws Exception {
+        Username invalidUserName = new Username("xxx");
+        String token = jwtUtil.encode(invalidUserName);
+
+        doAnswer(invocation -> {
+            throw new Unauthorized();
+        }).when(deleteCustomerService).delete(any(), any());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/customers/me")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"password\":\"Password1234!\"" +
+                                "}"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void deleteWithWrongPassword() throws Exception {
+        Username username = new Username("customer123");
+        String token = jwtUtil.encode(username);
+
+        doAnswer(invocation -> {
+            throw new AuthenticationFailed();
+        }).when(deleteCustomerService).delete(any(), any());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/customers/me")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"password\":\"Xxxxxx321!\"" +
                                 "}"))
                 .andExpect(status().is(481));
     }

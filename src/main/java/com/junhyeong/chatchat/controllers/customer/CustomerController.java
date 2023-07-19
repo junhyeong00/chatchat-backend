@@ -1,12 +1,14 @@
 package com.junhyeong.chatchat.controllers.customer;
 
 import com.junhyeong.chatchat.applications.customer.CreateCustomerService;
+import com.junhyeong.chatchat.applications.customer.DeleteCustomerService;
 import com.junhyeong.chatchat.applications.customer.EditCustomerPasswordService;
 import com.junhyeong.chatchat.applications.customer.EditCustomerService;
 import com.junhyeong.chatchat.applications.customer.GetCustomerProfileService;
 import com.junhyeong.chatchat.dtos.CreateCustomerRequest;
 import com.junhyeong.chatchat.dtos.CreateCustomerRequestDto;
 import com.junhyeong.chatchat.dtos.CustomerProfileDto;
+import com.junhyeong.chatchat.dtos.DeleteCustomerRequestDto;
 import com.junhyeong.chatchat.dtos.EditCustomerPasswordRequest;
 import com.junhyeong.chatchat.dtos.EditCustomerPasswordRequestDto;
 import com.junhyeong.chatchat.dtos.EditCustomerRequest;
@@ -18,10 +20,12 @@ import com.junhyeong.chatchat.exceptions.EditCustomerPasswordFailed;
 import com.junhyeong.chatchat.exceptions.SameAsPreviousPassword;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.exceptions.UsernameAlreadyInUse;
+import com.junhyeong.chatchat.models.commom.Password;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.customer.Customer;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,15 +45,18 @@ public class CustomerController {
     private final CreateCustomerService createCustomerService;
     private final EditCustomerService editCustomerService;
     private final EditCustomerPasswordService editCustomerPasswordService;
+    private final DeleteCustomerService deleteCustomerService;
 
     public CustomerController(GetCustomerProfileService getCustomerProfileService,
                               CreateCustomerService createCustomerService,
                               EditCustomerService editCustomerService,
-                              EditCustomerPasswordService editCustomerPasswordService) {
+                              EditCustomerPasswordService editCustomerPasswordService,
+                              DeleteCustomerService deleteCustomerService) {
         this.getCustomerProfileService = getCustomerProfileService;
         this.createCustomerService = createCustomerService;
         this.editCustomerService = editCustomerService;
         this.editCustomerPasswordService = editCustomerPasswordService;
+        this.deleteCustomerService = deleteCustomerService;
     }
 
     @GetMapping("me")
@@ -114,6 +121,17 @@ public class CustomerController {
         } catch (Exception e) {
             throw new EditCustomerPasswordFailed(e.getMessage());
         }
+    }
+
+    @DeleteMapping("me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void secession(
+            @RequestAttribute Username username,
+            @Validated @RequestBody DeleteCustomerRequestDto deleteCustomerRequestDto
+    ) {
+        Password password = new Password(deleteCustomerRequestDto.password());
+
+        deleteCustomerService.delete(username, password);
     }
 
     @ExceptionHandler(Unauthorized.class)

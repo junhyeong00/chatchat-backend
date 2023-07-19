@@ -1,16 +1,21 @@
 package com.junhyeong.chatchat.controllers.company;
 
 import com.junhyeong.chatchat.applications.company.CreateCompanyService;
+import com.junhyeong.chatchat.applications.company.EditCompanyPasswordService;
 import com.junhyeong.chatchat.applications.company.EditCompanyService;
 import com.junhyeong.chatchat.applications.company.GetCompanyProfileService;
 import com.junhyeong.chatchat.dtos.CompanyProfileDto;
 import com.junhyeong.chatchat.dtos.CreateCompanyRequest;
 import com.junhyeong.chatchat.dtos.CreateCompanyRequestDto;
+import com.junhyeong.chatchat.dtos.EditCompanyPasswordRequest;
+import com.junhyeong.chatchat.dtos.EditCompanyPasswordRequestDto;
 import com.junhyeong.chatchat.dtos.EditCompanyRequest;
 import com.junhyeong.chatchat.dtos.EditCompanyRequestDto;
+import com.junhyeong.chatchat.exceptions.AuthenticationFailed;
 import com.junhyeong.chatchat.exceptions.CreateCompanyFailed;
-import com.junhyeong.chatchat.exceptions.CreateCustomerFailed;
 import com.junhyeong.chatchat.exceptions.EditCompanyFailed;
+import com.junhyeong.chatchat.exceptions.EditCompanyPasswordFailed;
+import com.junhyeong.chatchat.exceptions.SameAsPreviousPassword;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.exceptions.UsernameAlreadyInUse;
 import com.junhyeong.chatchat.models.commom.Username;
@@ -35,13 +40,16 @@ public class CompanyController {
     private final GetCompanyProfileService getCompanyProfileService;
     private final CreateCompanyService createCompanyService;
     private final EditCompanyService editCompanyService;
+    private final EditCompanyPasswordService editCompanyPasswordService;
 
     public CompanyController(GetCompanyProfileService getCompanyProfileService,
                              CreateCompanyService createCompanyService,
-                             EditCompanyService editCompanyService) {
+                             EditCompanyService editCompanyService,
+                             EditCompanyPasswordService editCompanyPasswordService) {
         this.getCompanyProfileService = getCompanyProfileService;
         this.createCompanyService = createCompanyService;
         this.editCompanyService = editCompanyService;
+        this.editCompanyPasswordService = editCompanyPasswordService;
     }
 
     @GetMapping("me")
@@ -65,7 +73,7 @@ public class CompanyController {
         } catch (UsernameAlreadyInUse e) {
             throw new UsernameAlreadyInUse();
         } catch (Exception e) {
-            throw new CreateCustomerFailed(e.getMessage());
+            throw new CreateCompanyFailed(e.getMessage());
         }
     }
 
@@ -86,6 +94,28 @@ public class CompanyController {
         }
     }
 
+    @PatchMapping("me/password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void editPassword(
+            @RequestAttribute Username username,
+            @Validated @RequestBody EditCompanyPasswordRequestDto editCompanyPasswordRequestDto
+    ) {
+        try {
+            EditCompanyPasswordRequest editCompanyPasswordRequest
+                    = EditCompanyPasswordRequest.of(editCompanyPasswordRequestDto);
+
+            editCompanyPasswordService.edit(username, editCompanyPasswordRequest);
+        } catch (Unauthorized e) {
+            throw new Unauthorized();
+        } catch (AuthenticationFailed e) {
+            throw new AuthenticationFailed();
+        } catch (SameAsPreviousPassword e) {
+            throw new SameAsPreviousPassword();
+        } catch (Exception e) {
+            throw new EditCompanyPasswordFailed(e.getMessage());
+        }
+    }
+
     @ExceptionHandler(Unauthorized.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String unauthorized(Exception e) {
@@ -99,6 +129,20 @@ public class CompanyController {
         return e.getMessage();
     }
 
+    @ExceptionHandler(AuthenticationFailed.class)
+    public String authenticationFailed(Exception e, HttpServletResponse response) {
+        response.setStatus(481);
+
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(SameAsPreviousPassword.class)
+    public String sameAsPreviousPassword(Exception e, HttpServletResponse response) {
+        response.setStatus(482);
+
+        return e.getMessage();
+    }
+
     @ExceptionHandler(CreateCompanyFailed.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String createCompanyFailed(Exception e) {
@@ -108,6 +152,12 @@ public class CompanyController {
     @ExceptionHandler(EditCompanyFailed.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String editCompanyFailed(Exception e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(EditCompanyPasswordFailed.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String editCompanyPasswordFailed(Exception e) {
         return e.getMessage();
     }
 }

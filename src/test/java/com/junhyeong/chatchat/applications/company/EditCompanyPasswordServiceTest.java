@@ -1,14 +1,14 @@
-package com.junhyeong.chatchat.applications.customer;
+package com.junhyeong.chatchat.applications.company;
 
-import com.junhyeong.chatchat.dtos.EditCustomerPasswordRequest;
+import com.junhyeong.chatchat.dtos.EditCompanyPasswordRequest;
 import com.junhyeong.chatchat.exceptions.AuthenticationFailed;
 import com.junhyeong.chatchat.exceptions.NotMatchPassword;
 import com.junhyeong.chatchat.exceptions.SameAsPreviousPassword;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.models.commom.Password;
 import com.junhyeong.chatchat.models.commom.Username;
-import com.junhyeong.chatchat.models.customer.Customer;
-import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
+import com.junhyeong.chatchat.models.company.Company;
+import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
@@ -21,16 +21,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class EditCustomerPasswordServiceTest {
-    private CustomerRepository customerRepository;
+class EditCompanyPasswordServiceTest {
+    private CompanyRepository companyRepository;
     private PasswordEncoder passwordEncoder;
-    private EditCustomerPasswordService editCustomerPasswordService;
+    private EditCompanyPasswordService editCompanyPasswordService;
 
     @BeforeEach
     void setup() {
-        customerRepository = mock(CustomerRepository.class);
+        companyRepository = mock(CompanyRepository.class);
         passwordEncoder = new Argon2PasswordEncoder();
-        editCustomerPasswordService = new EditCustomerPasswordService(customerRepository, passwordEncoder);
+        editCompanyPasswordService = new EditCompanyPasswordService(companyRepository, passwordEncoder);
     }
 
     @Test
@@ -38,19 +38,19 @@ class EditCustomerPasswordServiceTest {
         Username username = new Username("test123");
         Password password = new Password("Password1234!");
 
-        EditCustomerPasswordRequest editCustomerRequest = new EditCustomerPasswordRequest(
+        EditCompanyPasswordRequest editCompanyRequest = new EditCompanyPasswordRequest(
                 password,
                 new Password("newPassword1234!"),
                 new Password("newPassword1234!")
         );
 
-        Customer customer = Customer.fake(username);
-        customer.changePassword(password, passwordEncoder);
+        Company company = Company.fake(username);
+        company.changePassword(password, passwordEncoder);
 
-        given(customerRepository.findByUsername(username))
-                .willReturn(Optional.of(customer));
+        given(companyRepository.findByUsername(username))
+                .willReturn(Optional.of(company));
 
-        assertDoesNotThrow(() -> editCustomerPasswordService.edit(username, editCustomerRequest));
+        assertDoesNotThrow(() -> editCompanyPasswordService.edit(username, editCompanyRequest));
     }
 
     @Test
@@ -58,17 +58,17 @@ class EditCustomerPasswordServiceTest {
         Username invalidUserName = new Username("xxx");
         Password password = new Password("Password1234!");
 
-        EditCustomerPasswordRequest editCustomerRequest = new EditCustomerPasswordRequest(
+        EditCompanyPasswordRequest editCompanyRequest = new EditCompanyPasswordRequest(
                 password,
                 new Password("newPassword1234!"),
                 new Password("newPassword1234!")
         );
 
-        given(customerRepository.findByUsername(invalidUserName))
+        given(companyRepository.findByUsername(invalidUserName))
                 .willThrow(Unauthorized.class);
 
         assertThrows(Unauthorized.class,
-                () -> editCustomerPasswordService.edit(invalidUserName, editCustomerRequest));
+                () -> editCompanyPasswordService.edit(invalidUserName, editCompanyRequest));
     }
 
     @Test
@@ -76,20 +76,20 @@ class EditCustomerPasswordServiceTest {
         Username username = new Username("test123");
         Password password = new Password("Password1234!");
 
-        EditCustomerPasswordRequest editCustomerRequest = new EditCustomerPasswordRequest(
+        EditCompanyPasswordRequest editCompanyRequest = new EditCompanyPasswordRequest(
                 password,
                 new Password("newPassword4321!"),
                 new Password("newPassword1234!")
         );
 
-        Customer customer = Customer.fake(username);
-        customer.changePassword(password, passwordEncoder);
+        Company company = Company.fake(username);
+        company.changePassword(password, passwordEncoder);
 
-        given(customerRepository.findByUsername(username))
-                .willReturn(Optional.of(customer));
+        given(companyRepository.findByUsername(username))
+                .willReturn(Optional.of(company));
 
         assertThrows(NotMatchPassword.class,
-                () -> editCustomerPasswordService.edit(username, editCustomerRequest));
+                () -> editCompanyPasswordService.edit(username, editCompanyRequest));
     }
 
     @Test
@@ -97,20 +97,20 @@ class EditCustomerPasswordServiceTest {
         Username username = new Username("test123");
         Password password = new Password("Password1234!");
 
-        EditCustomerPasswordRequest editCustomerRequest = new EditCustomerPasswordRequest(
+        EditCompanyPasswordRequest editCompanyRequest = new EditCompanyPasswordRequest(
                 password,
                 new Password("Password1234!"),
                 new Password("Password1234!")
         );
 
-        Customer customer = Customer.fake(username);
-        customer.changePassword(password, passwordEncoder);
+        Company company = Company.fake(username);
+        company.changePassword(password, passwordEncoder);
 
-        given(customerRepository.findByUsername(username))
-                .willReturn(Optional.of(customer));
+        given(companyRepository.findByUsername(username))
+                .willReturn(Optional.of(company));
 
         assertThrows(SameAsPreviousPassword.class,
-                () -> editCustomerPasswordService.edit(username, editCustomerRequest));
+                () -> editCompanyPasswordService.edit(username, editCompanyRequest));
     }
 
     @Test
@@ -119,19 +119,19 @@ class EditCustomerPasswordServiceTest {
         Password password = new Password("Password1234!");
         Password invalidPassword = new Password("Xxxxxx1234!");
 
-        EditCustomerPasswordRequest editCustomerRequest = new EditCustomerPasswordRequest(
+        EditCompanyPasswordRequest editCompanyRequest = new EditCompanyPasswordRequest(
                 invalidPassword,
                 new Password("newPassword1234!"),
                 new Password("newPassword1234!")
         );
 
-        Customer customer = Customer.fake(username);
-        customer.changePassword(password, passwordEncoder);
+        Company company = Company.fake(username);
+        company.changePassword(password, passwordEncoder);
 
-        given(customerRepository.findByUsername(username))
-                .willReturn(Optional.of(customer));
+        given(companyRepository.findByUsername(username))
+                .willReturn(Optional.of(company));
 
         assertThrows(AuthenticationFailed.class,
-                () -> editCustomerPasswordService.edit(username, editCustomerRequest));
+                () -> editCompanyPasswordService.edit(username, editCompanyRequest));
     }
 }

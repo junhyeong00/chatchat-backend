@@ -10,6 +10,7 @@ import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Image;
 import com.junhyeong.chatchat.models.commom.Name;
 import com.junhyeong.chatchat.models.commom.Password;
+import com.junhyeong.chatchat.models.commom.Status;
 import com.junhyeong.chatchat.models.commom.Username;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -51,6 +52,9 @@ public class Company {
     @Enumerated(EnumType.STRING)
     private ProfileVisibility profileVisibility;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     @CreationTimestamp
     private LocalDateTime registeredAt;
 
@@ -68,6 +72,7 @@ public class Company {
         this.description = description;
         this.profileImage = profileImage;
         this.profileVisibility = ProfileVisibility.HIDDEN;
+        this.status = Status.ACTIVE;
     }
 
     public Company(Username username, Name name,
@@ -77,6 +82,7 @@ public class Company {
         this.description = description;
         this.profileImage = profileImage;
         this.profileVisibility = ProfileVisibility.HIDDEN;
+        this.status = Status.ACTIVE;
     }
 
     public Company(Username username, Name name) {
@@ -85,6 +91,7 @@ public class Company {
         this.description = new Description("");
         this.profileImage = new Image(Image.DEFAULT_PROFILE_IMAGE);
         this.profileVisibility = ProfileVisibility.HIDDEN;
+        this.status = Status.ACTIVE;
     }
 
     public static Company fake(Username username) {
@@ -176,5 +183,9 @@ public class Company {
                 this.profileImage.value(),
                 messages,
                 page);
+    }
+
+    public void delete() {
+        this.status = Status.DELETED;
     }
 }

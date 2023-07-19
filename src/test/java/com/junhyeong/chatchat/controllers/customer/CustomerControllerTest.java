@@ -380,6 +380,7 @@ class CustomerControllerTest {
                 .andExpect(status().is(481));
     }
 
+    @Test
     void delete() throws Exception {
         Username username = new Username("customer123");
         String token = jwtUtil.encode(username);

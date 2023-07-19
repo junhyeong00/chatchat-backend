@@ -1,15 +1,21 @@
 package com.junhyeong.chatchat.controllers.customer;
 
 import com.junhyeong.chatchat.applications.customer.CreateCustomerService;
+import com.junhyeong.chatchat.applications.customer.EditCustomerPasswordService;
 import com.junhyeong.chatchat.applications.customer.EditCustomerService;
 import com.junhyeong.chatchat.applications.customer.GetCustomerProfileService;
 import com.junhyeong.chatchat.dtos.CreateCustomerRequest;
 import com.junhyeong.chatchat.dtos.CreateCustomerRequestDto;
 import com.junhyeong.chatchat.dtos.CustomerProfileDto;
+import com.junhyeong.chatchat.dtos.EditCustomerPasswordRequest;
+import com.junhyeong.chatchat.dtos.EditCustomerPasswordRequestDto;
 import com.junhyeong.chatchat.dtos.EditCustomerRequest;
 import com.junhyeong.chatchat.dtos.EditCustomerRequestDto;
+import com.junhyeong.chatchat.exceptions.AuthenticationFailed;
 import com.junhyeong.chatchat.exceptions.CreateCustomerFailed;
 import com.junhyeong.chatchat.exceptions.EditCustomerFailed;
+import com.junhyeong.chatchat.exceptions.EditCustomerPasswordFailed;
+import com.junhyeong.chatchat.exceptions.SameAsPreviousPassword;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.exceptions.UsernameAlreadyInUse;
 import com.junhyeong.chatchat.models.commom.Username;
@@ -34,13 +40,16 @@ public class CustomerController {
     private final GetCustomerProfileService getCustomerProfileService;
     private final CreateCustomerService createCustomerService;
     private final EditCustomerService editCustomerService;
+    private final EditCustomerPasswordService editCustomerPasswordService;
 
     public CustomerController(GetCustomerProfileService getCustomerProfileService,
                               CreateCustomerService createCustomerService,
-                              EditCustomerService editCustomerService) {
+                              EditCustomerService editCustomerService,
+                              EditCustomerPasswordService editCustomerPasswordService) {
         this.getCustomerProfileService = getCustomerProfileService;
         this.createCustomerService = createCustomerService;
         this.editCustomerService = editCustomerService;
+        this.editCustomerPasswordService = editCustomerPasswordService;
     }
 
     @GetMapping("me")
@@ -85,6 +94,28 @@ public class CustomerController {
         }
     }
 
+    @PatchMapping("me/password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void edit(
+            @RequestAttribute Username username,
+            @Validated @RequestBody EditCustomerPasswordRequestDto editCustomerPasswordRequestDto
+    ) {
+        try {
+            EditCustomerPasswordRequest editCustomerPasswordRequest
+                    = EditCustomerPasswordRequest.of(editCustomerPasswordRequestDto);
+
+            editCustomerPasswordService.edit(username, editCustomerPasswordRequest);
+        } catch (Unauthorized e) {
+            throw new Unauthorized();
+        } catch (AuthenticationFailed e) {
+            throw new AuthenticationFailed();
+        } catch (SameAsPreviousPassword e) {
+            throw new SameAsPreviousPassword();
+        } catch (Exception e) {
+            throw new EditCustomerPasswordFailed(e.getMessage());
+        }
+    }
+
     @ExceptionHandler(Unauthorized.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String unauthorized(Exception e) {
@@ -98,6 +129,20 @@ public class CustomerController {
         return e.getMessage();
     }
 
+    @ExceptionHandler(AuthenticationFailed.class)
+    public String authenticationFailed(Exception e, HttpServletResponse response) {
+        response.setStatus(481);
+
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(SameAsPreviousPassword.class)
+    public String sameAsPreviousPassword(Exception e, HttpServletResponse response) {
+        response.setStatus(482);
+
+        return e.getMessage();
+    }
+
     @ExceptionHandler(CreateCustomerFailed.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String createCustomerFailed(Exception e) {
@@ -107,6 +152,12 @@ public class CustomerController {
     @ExceptionHandler(EditCustomerFailed.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String editCustomerFailed(Exception e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(EditCustomerPasswordFailed.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String editCustomerPasswordFailed(Exception e) {
         return e.getMessage();
     }
 }

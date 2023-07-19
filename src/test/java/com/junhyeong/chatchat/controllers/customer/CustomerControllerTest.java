@@ -1,8 +1,12 @@
 package com.junhyeong.chatchat.controllers.customer;
 
 import com.junhyeong.chatchat.applications.customer.CreateCustomerService;
+import com.junhyeong.chatchat.applications.customer.EditCustomerPasswordService;
 import com.junhyeong.chatchat.applications.customer.EditCustomerService;
 import com.junhyeong.chatchat.applications.customer.GetCustomerProfileService;
+import com.junhyeong.chatchat.exceptions.AuthenticationFailed;
+import com.junhyeong.chatchat.exceptions.NotMatchPassword;
+import com.junhyeong.chatchat.exceptions.SameAsPreviousPassword;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.exceptions.UsernameAlreadyInUse;
 import com.junhyeong.chatchat.models.commom.Username;
@@ -35,6 +39,9 @@ class CustomerControllerTest {
 
     @MockBean
     private EditCustomerService editCustomerService;
+
+    @MockBean
+    private EditCustomerPasswordService editCustomerPasswordService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -215,5 +222,157 @@ class CustomerControllerTest {
                                 "\"confirmPassword\":\"Password1234!\"" +
                                 "}"))
                 .andExpect(status().is(480));
+    }
+
+    @Test
+    void editPassword() throws Exception {
+        Username username = new Username("customer123");
+        String token = jwtUtil.encode(username);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/customers/me/password")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"password\":\"Password1234!\"," +
+                                "\"newPassword\":\"newPassword1234!\"," +
+                                "\"confirmNewPassword\":\"newPassword1234!\"" +
+                                "}"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void editPasswordWithUnauthorized() throws Exception {
+        Username invalidUserName = new Username("xxx");
+        String token = jwtUtil.encode(invalidUserName);
+
+        doAnswer(invocation -> {
+            throw new Unauthorized();
+        }).when(editCustomerPasswordService).edit(any(), any());
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/customers/me/password")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"password\":\"Password1234!\"," +
+                                "\"newPassword\":\"newPassword1234!\"," +
+                                "\"confirmNewPassword\":\"newPassword1234!\"" +
+                                "}"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void editPasswordWithBlankPassword() throws Exception {
+        Username username = new Username("customer123");
+        String token = jwtUtil.encode(username);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/customers/me/password")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"password\":\"\"," +
+                                "\"newPassword\":\"newPassword1234!\"," +
+                                "\"confirmNewPassword\":\"newPassword1234!\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void editPasswordWithBlankNewPassword() throws Exception {
+        Username username = new Username("customer123");
+        String token = jwtUtil.encode(username);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/customers/me/password")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"password\":\"Password1234!\"," +
+                                "\"newPassword\":\"\"," +
+                                "\"confirmNewPassword\":\"newPassword1234!\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void editPasswordWithBlankConfirmNewPassword() throws Exception {
+        Username username = new Username("customer123");
+        String token = jwtUtil.encode(username);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/customers/me/password")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"password\":\"Password1234!\"," +
+                                "\"newPassword\":\"newPassword1234!\"," +
+                                "\"confirmNewPassword\":\"\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void editPasswordWithNotMatchPassword() throws Exception {
+        Username username = new Username("customer123");
+        String token = jwtUtil.encode(username);
+
+        doAnswer(invocation -> {
+            throw new NotMatchPassword();
+        }).when(editCustomerPasswordService).edit(any(), any());
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/customers/me/password")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"password\":\"Password1234!\"," +
+                                "\"newPassword\":\"newPassword1234!\"," +
+                                "\"confirmNewPassword\":\"newPassword321!\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void editPasswordWithSameAsPreviousPassword() throws Exception {
+        Username username = new Username("customer123");
+        String token = jwtUtil.encode(username);
+
+        doAnswer(invocation -> {
+            throw new SameAsPreviousPassword();
+        }).when(editCustomerPasswordService).edit(any(), any());
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/customers/me/password")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"password\":\"Password1234!\"," +
+                                "\"newPassword\":\"Password1234!\"," +
+                                "\"confirmNewPassword\":\"Password1234!\"" +
+                                "}"))
+                .andExpect(status().is(482));
+    }
+
+    @Test
+    void editPasswordWithWrongPassword() throws Exception {
+        Username username = new Username("customer123");
+        String token = jwtUtil.encode(username);
+
+        doAnswer(invocation -> {
+            throw new AuthenticationFailed();
+        }).when(editCustomerPasswordService).edit(any(), any());
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/customers/me/password")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"password\":\"Xxxxxx321!\"," +
+                                "\"newPassword\":\"newPassword1234!\"," +
+                                "\"confirmNewPassword\":\"newPassword1234!\"" +
+                                "}"))
+                .andExpect(status().is(481));
     }
 }

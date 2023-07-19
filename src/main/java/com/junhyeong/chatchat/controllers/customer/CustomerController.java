@@ -96,7 +96,7 @@ public class CustomerController {
 
     @PatchMapping("me/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void edit(
+    public void editPassword(
             @RequestAttribute Username username,
             @Validated @RequestBody EditCustomerPasswordRequestDto editCustomerPasswordRequestDto
     ) {

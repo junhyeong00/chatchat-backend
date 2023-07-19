@@ -5,6 +5,7 @@ import com.junhyeong.chatchat.dtos.CompanyDetailDto;
 import com.junhyeong.chatchat.dtos.CompanyProfileDto;
 import com.junhyeong.chatchat.dtos.MessageDto;
 import com.junhyeong.chatchat.dtos.PageDto;
+import com.junhyeong.chatchat.exceptions.AuthenticationFailed;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Image;
 import com.junhyeong.chatchat.models.commom.Name;
@@ -110,7 +111,7 @@ public class Company {
 
     public void authenticate(Password password, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(password.getValue(), this.password.getValue())) {
-            throw new LoginFailed();
+            throw new AuthenticationFailed();
         }
     }
 

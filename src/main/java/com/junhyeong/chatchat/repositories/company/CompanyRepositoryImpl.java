@@ -1,6 +1,7 @@
 package com.junhyeong.chatchat.repositories.company;
 
 import com.junhyeong.chatchat.dtos.CompanySummaryDto;
+import com.junhyeong.chatchat.models.commom.Status;
 import com.junhyeong.chatchat.models.company.ProfileVisibility;
 import com.junhyeong.chatchat.models.company.QCompany;
 import com.querydsl.core.types.Projections;
@@ -35,7 +36,8 @@ public class CompanyRepositoryImpl implements CompanyRepositoryQueryDsl {
                         ))
                 .from(company)
                 .where(company.profileVisibility.eq(ProfileVisibility.VISIBLE)
-                        .and(company.name.value.contains(keyword)))
+                        .and(company.name.value.contains(keyword))
+                        .and(company.status.ne(Status.DELETED)))
                 .orderBy(company.registeredAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

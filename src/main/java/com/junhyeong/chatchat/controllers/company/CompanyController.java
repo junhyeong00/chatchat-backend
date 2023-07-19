@@ -1,12 +1,14 @@
 package com.junhyeong.chatchat.controllers.company;
 
 import com.junhyeong.chatchat.applications.company.CreateCompanyService;
+import com.junhyeong.chatchat.applications.company.DeleteCompanyService;
 import com.junhyeong.chatchat.applications.company.EditCompanyPasswordService;
 import com.junhyeong.chatchat.applications.company.EditCompanyService;
 import com.junhyeong.chatchat.applications.company.GetCompanyProfileService;
 import com.junhyeong.chatchat.dtos.CompanyProfileDto;
 import com.junhyeong.chatchat.dtos.CreateCompanyRequest;
 import com.junhyeong.chatchat.dtos.CreateCompanyRequestDto;
+import com.junhyeong.chatchat.dtos.DeleteCompanyRequestDto;
 import com.junhyeong.chatchat.dtos.EditCompanyPasswordRequest;
 import com.junhyeong.chatchat.dtos.EditCompanyPasswordRequestDto;
 import com.junhyeong.chatchat.dtos.EditCompanyRequest;
@@ -18,10 +20,12 @@ import com.junhyeong.chatchat.exceptions.EditCompanyPasswordFailed;
 import com.junhyeong.chatchat.exceptions.SameAsPreviousPassword;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.exceptions.UsernameAlreadyInUse;
+import com.junhyeong.chatchat.models.commom.Password;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,15 +45,18 @@ public class CompanyController {
     private final CreateCompanyService createCompanyService;
     private final EditCompanyService editCompanyService;
     private final EditCompanyPasswordService editCompanyPasswordService;
+    private final DeleteCompanyService deleteCompanyService;
 
     public CompanyController(GetCompanyProfileService getCompanyProfileService,
                              CreateCompanyService createCompanyService,
                              EditCompanyService editCompanyService,
-                             EditCompanyPasswordService editCompanyPasswordService) {
+                             EditCompanyPasswordService editCompanyPasswordService,
+                             DeleteCompanyService deleteCompanyService) {
         this.getCompanyProfileService = getCompanyProfileService;
         this.createCompanyService = createCompanyService;
         this.editCompanyService = editCompanyService;
         this.editCompanyPasswordService = editCompanyPasswordService;
+        this.deleteCompanyService = deleteCompanyService;
     }
 
     @GetMapping("me")
@@ -114,6 +121,17 @@ public class CompanyController {
         } catch (Exception e) {
             throw new EditCompanyPasswordFailed(e.getMessage());
         }
+    }
+
+    @DeleteMapping("me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void secession(
+            @RequestAttribute Username username,
+            @Validated @RequestBody DeleteCompanyRequestDto deleteCompanyRequestDto
+    ) {
+        Password password = new Password(deleteCompanyRequestDto.password());
+
+        deleteCompanyService.delete(username, password);
     }
 
     @ExceptionHandler(Unauthorized.class)

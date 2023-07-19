@@ -1,13 +1,11 @@
 package com.junhyeong.chatchat.controllers.company;
 
 import com.junhyeong.chatchat.applications.company.CreateCompanyService;
+import com.junhyeong.chatchat.applications.company.DeleteCompanyService;
 import com.junhyeong.chatchat.applications.company.EditCompanyPasswordService;
 import com.junhyeong.chatchat.applications.company.EditCompanyService;
 import com.junhyeong.chatchat.applications.company.GetCompanyProfileService;
-import com.junhyeong.chatchat.applications.customer.CreateCustomerService;
-import com.junhyeong.chatchat.controllers.company.CompanyController;
 import com.junhyeong.chatchat.exceptions.AuthenticationFailed;
-import com.junhyeong.chatchat.exceptions.CompanyNotFound;
 import com.junhyeong.chatchat.exceptions.NotMatchPassword;
 import com.junhyeong.chatchat.exceptions.SameAsPreviousPassword;
 import com.junhyeong.chatchat.exceptions.Unauthorized;
@@ -45,6 +43,9 @@ class CompanyControllerTest {
 
     @MockBean
     private EditCompanyPasswordService editCompanyPasswordService;
+
+    @MockBean
+    private DeleteCompanyService deleteCompanyService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -379,6 +380,59 @@ class CompanyControllerTest {
                                 "\"password\":\"Xxxxxx321!\"," +
                                 "\"newPassword\":\"newPassword1234!\"," +
                                 "\"confirmNewPassword\":\"newPassword1234!\"" +
+                                "}"))
+                .andExpect(status().is(481));
+    }
+
+    @Test
+    void delete() throws Exception {
+        Username username = new Username("company123");
+        String token = jwtUtil.encode(username);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/companies/me")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"password\":\"Password1234!\"" +
+                                "}"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteWithUnauthorized() throws Exception {
+        Username invalidUserName = new Username("xxx");
+        String token = jwtUtil.encode(invalidUserName);
+
+        doAnswer(invocation -> {
+            throw new Unauthorized();
+        }).when(deleteCompanyService).delete(any(), any());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/companies/me")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"password\":\"Password1234!\"" +
+                                "}"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void deleteWithWrongPassword() throws Exception {
+        Username username = new Username("company123");
+        String token = jwtUtil.encode(username);
+
+        doAnswer(invocation -> {
+            throw new AuthenticationFailed();
+        }).when(deleteCompanyService).delete(any(), any());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/companies/me")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"password\":\"Xxxxxx321!\"" +
                                 "}"))
                 .andExpect(status().is(481));
     }

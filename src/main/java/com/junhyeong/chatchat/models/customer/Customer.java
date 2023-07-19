@@ -9,6 +9,7 @@ import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Image;
 import com.junhyeong.chatchat.models.commom.Name;
 import com.junhyeong.chatchat.models.commom.Password;
+import com.junhyeong.chatchat.models.commom.Status;
 import com.junhyeong.chatchat.models.commom.Username;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -18,6 +19,8 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
@@ -41,6 +44,9 @@ public class Customer {
     @AttributeOverride(name = "value", column = @Column(name = "profile_image"))
     private Image profileImage;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     @CreationTimestamp
     private LocalDateTime registeredAt;
 
@@ -54,12 +60,14 @@ public class Customer {
         this.id = id;
         this.username = username;
         this.name = name;
+        this.status = Status.ACTIVE;
     }
 
     public Customer(Username username, Name name) {
         this.username = username;
         this.name = name;
         this.profileImage = new Image(Image.DEFAULT_PROFILE_IMAGE);
+        this.status = Status.ACTIVE;
     }
 
     public static Customer fake(Username username) {
@@ -93,6 +101,10 @@ public class Customer {
         return name;
     }
 
+    public Status status() {
+        return status;
+    }
+
     public LocalDateTime getRegisteredAt() {
         return registeredAt;
     }
@@ -118,5 +130,9 @@ public class Customer {
     public void edit(Name name, Image profileImage) {
         this.name = name;
         this.profileImage = profileImage;
+    }
+
+    public void delete() {
+        this.status = Status.DELETED;
     }
 }

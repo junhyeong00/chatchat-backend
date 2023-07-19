@@ -4,6 +4,7 @@ import com.junhyeong.chatchat.dtos.ChatRoomDetailDto;
 import com.junhyeong.chatchat.dtos.CustomerProfileDto;
 import com.junhyeong.chatchat.dtos.MessageDto;
 import com.junhyeong.chatchat.dtos.PageDto;
+import com.junhyeong.chatchat.exceptions.AuthenticationFailed;
 import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Image;
 import com.junhyeong.chatchat.models.commom.Name;
@@ -72,7 +73,7 @@ public class Customer {
 
     public void authenticate(Password password, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(password.getValue(), this.password.getValue())) {
-            throw new LoginFailed();
+            throw new AuthenticationFailed();
         }
     }
 

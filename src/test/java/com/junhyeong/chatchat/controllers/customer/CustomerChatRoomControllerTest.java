@@ -1,5 +1,6 @@
 package com.junhyeong.chatchat.controllers.customer;
 
+import com.junhyeong.chatchat.applications.chatRoom.CreateChatRoomService;
 import com.junhyeong.chatchat.applications.chatRoom.GetCustomerChatRoomService;
 import com.junhyeong.chatchat.applications.chatRoom.GetCustomerChatRoomsService;
 import com.junhyeong.chatchat.dtos.ChatRoomDto;
@@ -14,11 +15,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,6 +35,9 @@ class CustomerChatRoomControllerTest {
 
     @MockBean
     private GetCustomerChatRoomService getChatRoomService;
+
+    @MockBean
+    private CreateChatRoomService createChatRoomService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -112,5 +118,41 @@ class CustomerChatRoomControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get(String.format("/customer/chatrooms/%d", chatRoomId))
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void createWithAlreadyExistChatRoom() throws Exception {
+        Username username = new Username("customer123");
+        String token = jwtUtil.encode(username);
+
+        given(createChatRoomService.getCharRoomId(any(), any()))
+                .willReturn(1L);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/customer/chatrooms")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"companyId\":\"1\"" +
+                                "}"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void create() throws Exception {
+        Username username = new Username("customer123");
+        String token = jwtUtil.encode(username);
+
+        given(createChatRoomService.getCharRoomId(any(), any()))
+                .willThrow(ChatRoomNotFound.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/customer/chatrooms")
+                        .header("Authorization", "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"companyId\":\"1\"" +
+                                "}"))
+                .andExpect(status().isCreated());
     }
 }

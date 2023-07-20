@@ -38,17 +38,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
-@RequestMapping("auto-replies")
-public class AutoReplyController {
+@RequestMapping("company/auto-replies")
+public class CompanyAutoReplyController {
     private final GetAutoRepliesService getAutoRepliesService;
     private final CreateAutoReplyService createAutoReplyService;
     private final EditAutoReplyService editAutoReplyService;
     private final DeleteAutoReplyService deleteAutoReplyService;
 
-    public AutoReplyController(GetAutoRepliesService getAutoRepliesService,
-                               CreateAutoReplyService createAutoReplyService,
-                               EditAutoReplyService editAutoReplyService,
-                               DeleteAutoReplyService deleteAutoReplyService) {
+    public CompanyAutoReplyController(GetAutoRepliesService getAutoRepliesService,
+                                      CreateAutoReplyService createAutoReplyService,
+                                      EditAutoReplyService editAutoReplyService,
+                                      DeleteAutoReplyService deleteAutoReplyService) {
         this.getAutoRepliesService = getAutoRepliesService;
         this.createAutoReplyService = createAutoReplyService;
         this.editAutoReplyService = editAutoReplyService;

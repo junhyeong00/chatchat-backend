@@ -5,7 +5,6 @@ import com.junhyeong.chatchat.applications.autoReply.DeleteAutoReplyService;
 import com.junhyeong.chatchat.applications.autoReply.EditAutoReplyService;
 import com.junhyeong.chatchat.applications.autoReply.GetAutoRepliesService;
 import com.junhyeong.chatchat.dtos.CreateAutoReplyRequest;
-import com.junhyeong.chatchat.dtos.EditAutoReplyRequest;
 import com.junhyeong.chatchat.exceptions.AutoReplyNotFound;
 import com.junhyeong.chatchat.exceptions.NotHaveDeleteAutoReplyAuthority;
 import com.junhyeong.chatchat.exceptions.NotHaveEditAutoReplyAuthority;
@@ -30,8 +29,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AutoReplyController.class)
-class AutoReplyControllerTest {
+@WebMvcTest(CompanyAutoReplyController.class)
+class CompanyAutoReplyControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -60,7 +59,7 @@ class AutoReplyControllerTest {
         given(getAutoRepliesService.autoReplies(username))
                 .willReturn(autoReplies);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/auto-replies")
+        mockMvc.perform(MockMvcRequestBuilders.get("/company/auto-replies")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
     }
@@ -74,7 +73,7 @@ class AutoReplyControllerTest {
         given(getAutoRepliesService.autoReplies(invalidUsername))
                 .willThrow(Unauthorized.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/auto-replies")
+        mockMvc.perform(MockMvcRequestBuilders.get("/company/auto-replies")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isUnauthorized());
     }
@@ -89,7 +88,7 @@ class AutoReplyControllerTest {
         given(createAutoReplyService.create(username, createAutoReplyRequest))
                 .willReturn(1L);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/auto-replies")
+        mockMvc.perform(MockMvcRequestBuilders.post("/company/auto-replies")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -107,7 +106,7 @@ class AutoReplyControllerTest {
         given(createAutoReplyService.create(any(), any()))
                 .willThrow(Unauthorized.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/auto-replies")
+        mockMvc.perform(MockMvcRequestBuilders.post("/company/auto-replies")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -122,7 +121,7 @@ class AutoReplyControllerTest {
         Username username = new Username("company123");
         String token = jwtUtil.encode(username);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/auto-replies")
+        mockMvc.perform(MockMvcRequestBuilders.post("/company/auto-replies")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -137,7 +136,7 @@ class AutoReplyControllerTest {
         Username username = new Username("company123");
         String token = jwtUtil.encode(username);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/auto-replies")
+        mockMvc.perform(MockMvcRequestBuilders.post("/company/auto-replies")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -154,7 +153,7 @@ class AutoReplyControllerTest {
 
         Long autoReplyId = 1L;
 
-        mockMvc.perform(MockMvcRequestBuilders.patch(String.format("/auto-replies/%d", autoReplyId))
+        mockMvc.perform(MockMvcRequestBuilders.patch(String.format("/company/auto-replies/%d", autoReplyId))
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -175,7 +174,7 @@ class AutoReplyControllerTest {
             throw new Unauthorized();
         }).when(editAutoReplyService).edit(any(),any());
 
-        mockMvc.perform(MockMvcRequestBuilders.patch(String.format("/auto-replies/%d", autoReplyId))
+        mockMvc.perform(MockMvcRequestBuilders.patch(String.format("/company/auto-replies/%d", autoReplyId))
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -196,7 +195,7 @@ class AutoReplyControllerTest {
             throw new NotHaveEditAutoReplyAuthority();
         }).when(editAutoReplyService).edit(any(),any());
 
-        mockMvc.perform(MockMvcRequestBuilders.patch(String.format("/auto-replies/%d", autoReplyId))
+        mockMvc.perform(MockMvcRequestBuilders.patch(String.format("/company/auto-replies/%d", autoReplyId))
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -217,7 +216,7 @@ class AutoReplyControllerTest {
             throw new AutoReplyNotFound();
         }).when(editAutoReplyService).edit(any(),any());
 
-        mockMvc.perform(MockMvcRequestBuilders.patch(String.format("/auto-replies/%d", autoReplyId))
+        mockMvc.perform(MockMvcRequestBuilders.patch(String.format("/company/auto-replies/%d", autoReplyId))
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -234,7 +233,7 @@ class AutoReplyControllerTest {
 
         Long autoReplyId = 1L;
 
-        mockMvc.perform(MockMvcRequestBuilders.patch(String.format("/auto-replies/%d", autoReplyId))
+        mockMvc.perform(MockMvcRequestBuilders.patch(String.format("/company/auto-replies/%d", autoReplyId))
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -251,7 +250,7 @@ class AutoReplyControllerTest {
 
         Long autoReplyId = 1L;
 
-        mockMvc.perform(MockMvcRequestBuilders.patch(String.format("/auto-replies/%d", autoReplyId))
+        mockMvc.perform(MockMvcRequestBuilders.patch(String.format("/company/auto-replies/%d", autoReplyId))
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -268,7 +267,7 @@ class AutoReplyControllerTest {
 
         Long autoReplyId = 1L;
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/auto-replies/%d", autoReplyId))
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/company/auto-replies/%d", autoReplyId))
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNoContent());
     }
@@ -284,7 +283,7 @@ class AutoReplyControllerTest {
             throw new Unauthorized();
         }).when(deleteAutoReplyService).delete(any(),any());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/auto-replies/%d", autoReplyId))
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/company/auto-replies/%d", autoReplyId))
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isUnauthorized());
     }
@@ -300,7 +299,7 @@ class AutoReplyControllerTest {
             throw new NotHaveDeleteAutoReplyAuthority();
         }).when(deleteAutoReplyService).delete(any(),any());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/auto-replies/%d", autoReplyId))
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/company/auto-replies/%d", autoReplyId))
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isForbidden());
     }
@@ -316,7 +315,7 @@ class AutoReplyControllerTest {
             throw new AutoReplyNotFound();
         }).when(deleteAutoReplyService).delete(any(),any());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/auto-replies/%d", autoReplyId))
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/company/auto-replies/%d", autoReplyId))
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNotFound());
     }

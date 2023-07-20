@@ -1,6 +1,7 @@
 package com.junhyeong.chatchat.models.autoReply;
 
 import com.junhyeong.chatchat.dtos.AutoReplyDto;
+import com.junhyeong.chatchat.dtos.AutoReplyQuestionDto;
 import com.junhyeong.chatchat.exceptions.NotHaveDeleteAutoReplyAuthority;
 import com.junhyeong.chatchat.exceptions.NotHaveEditAutoReplyAuthority;
 import com.junhyeong.chatchat.models.commom.Status;
@@ -72,6 +73,10 @@ public class AutoReply {
 
     public AutoReplyDto toDto() {
         return new AutoReplyDto(id, question.value(), answer.value());
+    }
+
+    public AutoReplyQuestionDto toQuestionDto() {
+        return new AutoReplyQuestionDto(id, question.value());
     }
 
     public boolean isWriter(Username username) {

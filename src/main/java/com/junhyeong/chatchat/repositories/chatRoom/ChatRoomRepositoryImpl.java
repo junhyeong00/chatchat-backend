@@ -47,7 +47,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                         getUnreadMessageCount(chatRoom, company)
                         ))
                 .from(chatRoom)
-                .leftJoin(message)
+                .innerJoin(message)
                 .on(chatRoom.id.eq(message.chatRoomId))
                 .leftJoin(customer)
                 .on(chatRoom.customer.eq(customer.username))
@@ -55,7 +55,13 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                 .groupBy(chatRoom.id, customer.name, customer.profileImage,
                          message.content, message.createdAt, message.readStatus)
                 .having(message.createdAt.eq(
-                        getLastCreatedAt(chatRoom)
+                        getLastCreatedAt(chatRoom)).and(
+                        chatRoom.id.in(
+                                JPAExpressions
+                                        .selectDistinct(message.chatRoomId)
+                                        .from(message)
+                                        .where(message.type.eq(MessageType.GENERAL))
+                        )
                 ))
                 .orderBy(
                         new CaseBuilder()

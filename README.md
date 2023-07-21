@@ -20,6 +20,16 @@
 
 <br>
 
+## 도메인 설계
+<p align="center">
+  <br>
+  <img width="850" alt="도메인" 
+    src="https://github.com/junhyeong00/chatchat-backend/assets/107493122/ef85a36a-0336-4d10-8048-bb7d999b69ec">
+  <br>
+</p>
+
+<br>
+
 ## 아키텍쳐
 <p align="center">
   <br>

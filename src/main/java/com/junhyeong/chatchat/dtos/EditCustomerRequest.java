@@ -15,7 +15,8 @@ public class EditCustomerRequest {
     public static EditCustomerRequest of(EditCustomerRequestDto editCustomerRequestDto) {
         return new EditCustomerRequest(
                 new Name(editCustomerRequestDto.name()),
-                new Image(editCustomerRequestDto.imageUrl()));
+                new Image(editCustomerRequestDto.imageUrl().isBlank() ?
+                        Image.DEFAULT_PROFILE_IMAGE : editCustomerRequestDto.imageUrl()));
     }
 
     public static EditCustomerRequest fake(Name name) {

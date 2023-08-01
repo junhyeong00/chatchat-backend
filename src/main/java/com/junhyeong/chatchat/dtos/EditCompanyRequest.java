@@ -23,7 +23,8 @@ public class EditCompanyRequest {
         return new EditCompanyRequest(
                 new Name(editCompanyRequestDto.name()),
                 new Description(editCompanyRequestDto.description()),
-                new Image(editCompanyRequestDto.imageUrl()),
+                new Image(editCompanyRequestDto.imageUrl().isBlank() ?
+                        Image.DEFAULT_PROFILE_IMAGE : editCompanyRequestDto.imageUrl()),
                 editCompanyRequestDto.profileVisibility() ?
                         ProfileVisibility.VISIBLE : ProfileVisibility.HIDDEN);
     }

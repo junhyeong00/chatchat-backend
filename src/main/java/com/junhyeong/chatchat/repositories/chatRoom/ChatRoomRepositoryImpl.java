@@ -104,7 +104,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                 .having(message.createdAt.eq(
                         getLastCreatedAt(chatRoom)
                 ))
-                .orderBy(message.createdAt.max().asc())
+                .orderBy(message.createdAt.max().desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

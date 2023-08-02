@@ -68,7 +68,7 @@ public class BackdoorController {
     public String companies() {
         jdbcTemplate.execute("DELETE FROM company");
 
-        for (int i = 1; i <= 10; i += 1) {
+        for (int i = 1; i <= 11; i += 1) {
             Company company1 = new Company(new Username("company" + i), new Name("기업" + i));
             company1.changePassword(new Password("Password1234!"), passwordEncoder);
             companyRepository.save(company1);
@@ -85,7 +85,7 @@ public class BackdoorController {
         Customer customer1 = customerRepository.findByUsername(new Username("customer1"))
                 .orElseThrow(CustomerNotFound::new);
 
-        for (int i = 1; i <= 10; i += 1) {
+        for (int i = 1; i <= 11; i += 1) {
             Company company1 = companyRepository.findByUsername(new Username("company" + i))
                     .orElseThrow(CompanyNotFound::new);
 
@@ -117,7 +117,7 @@ public class BackdoorController {
 
     @GetMapping("/auto-replies")
     public String autoReplies() {
-        jdbcTemplate.execute("DELETE FROM autoReply");
+        jdbcTemplate.execute("DELETE FROM auto_reply");
 
         Company company1 = companyRepository.findByUsername(new Username("company1"))
                 .orElseThrow(CompanyNotFound::new);
@@ -129,11 +129,11 @@ public class BackdoorController {
         );
         autoReplyRepository.save(autoReply1);
 
-        Company company10 = companyRepository.findByUsername(new Username("company10"))
+        Company company11 = companyRepository.findByUsername(new Username("company11"))
                 .orElseThrow(CompanyNotFound::new);
 
         AutoReply autoReply2 = new AutoReply(
-                company10.username(),
+                company11.username(),
                 new Question("질문"),
                 new Answer("답변")
         );

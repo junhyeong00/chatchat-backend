@@ -74,7 +74,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        Long count = getPageCount(company, chatRoom);
+        Long count = getPageCountByCompany(company, chatRoom);
 
         return new PageImpl<>(chatRooms, pageable, count);
     }
@@ -109,7 +109,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        Long count = getPageCount(customer, chatRoom);
+        Long count = getPageCountByCustomer(customer, chatRoom);
 
         return new PageImpl<>(chatRooms, pageable, count);
     }
@@ -136,11 +136,19 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                 .where(message.chatRoomId.eq(chatRoom.id));
     }
 
-    private Long getPageCount(Username company, QChatRoom chatRoom) {
+    private Long getPageCountByCompany(Username company, QChatRoom chatRoom) {
         return queryFactory
                 .select(chatRoom.count())
                 .from(chatRoom)
                 .where(chatRoom.company.eq(company))
+                .fetchOne();
+    }
+
+    private Long getPageCountByCustomer(Username customer, QChatRoom chatRoom) {
+        return queryFactory
+                .select(chatRoom.count())
+                .from(chatRoom)
+                .where(chatRoom.customer.eq(customer))
                 .fetchOne();
     }
 }

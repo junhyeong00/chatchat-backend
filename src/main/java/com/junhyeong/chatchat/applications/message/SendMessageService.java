@@ -36,13 +36,7 @@ public class SendMessageService {
     public void sendMessage(MessageRequest messageRequest) {
         Long senderId = messageRequest.getSenderId();
 
-        Username username = switch (messageRequest.getRole()) {
-            case "company" -> companyRepository.findById(senderId)
-                    .orElseThrow(CompanyNotFound::new).username();
-            case "customer" -> customerRepository.findById(senderId)
-                    .orElseThrow(CustomerNotFound::new).username();
-            default -> throw new UnknownRole();
-        };
+        Username username = getUsername(messageRequest, senderId);
 
         Message message = new Message(
                 messageRequest.getChatRoomId(),
@@ -57,5 +51,15 @@ public class SendMessageService {
                 "/sub/chatrooms/" + saved.chatRoomId(),
                 saved.toDto()
         );
+    }
+
+    private Username getUsername(MessageRequest messageRequest, Long senderId) {
+        return switch (messageRequest.getRole()) {
+            case "company" -> companyRepository.findById(senderId)
+                    .orElseThrow(CompanyNotFound::new).username();
+            case "customer" -> customerRepository.findById(senderId)
+                    .orElseThrow(CustomerNotFound::new).username();
+            default -> throw new UnknownRole();
+        };
     }
 }

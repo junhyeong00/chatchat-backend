@@ -114,6 +114,69 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
         return new PageImpl<>(chatRooms, pageable, count);
     }
 
+    @Override
+    public ChatRoomDto findDtoByCompany(Username company) {
+        QChatRoom chatRoom = QChatRoom.chatRoom;
+        QMessage message = QMessage.message;
+        QCustomer customer = QCustomer.customer;
+
+        return queryFactory
+                .select(Projections.constructor(ChatRoomDto.class,
+                        chatRoom.id,
+                        customer.name,
+                        customer.profileImage,
+                        message.content,
+                        message.createdAt,
+                        getUnreadMessageCount(chatRoom, company)
+                ))
+                .from(chatRoom)
+                .innerJoin(message)
+                .on(chatRoom.id.eq(message.chatRoomId))
+                .leftJoin(customer)
+                .on(chatRoom.customer.eq(customer.username))
+                .where(message.type.eq(MessageType.GENERAL))
+                .groupBy(chatRoom.id, customer.name, customer.profileImage,
+                        message.content, message.createdAt, message.readStatus)
+                .having(message.createdAt.eq(
+                        getLastCreatedAt(chatRoom)).and(
+                        chatRoom.id.in(
+                                JPAExpressions
+                                        .selectDistinct(message.chatRoomId)
+                                        .from(message)
+                                        .where(message.type.eq(MessageType.GENERAL))
+                        )
+                ))
+                .fetchOne();
+    }
+
+    @Override
+    public ChatRoomDto findDtoByCustomer(Username customer) {
+        QChatRoom chatRoom = QChatRoom.chatRoom;
+        QMessage message = QMessage.message;
+        QCompany company = QCompany.company;
+
+        return queryFactory
+                .select(Projections.constructor(ChatRoomDto.class,
+                        chatRoom.id,
+                        company.name,
+                        company.profileImage,
+                        message.content,
+                        message.createdAt,
+                        getUnreadMessageCount(chatRoom, customer)
+                ))
+                .from(chatRoom)
+                .leftJoin(message)
+                .on(chatRoom.id.eq(message.chatRoomId))
+                .leftJoin(company)
+                .on(chatRoom.company.eq(company.username))
+                .groupBy(chatRoom.id, company.name, company.profileImage,
+                        message.content, message.createdAt, message.readStatus)
+                .having(message.createdAt.eq(
+                        getLastCreatedAt(chatRoom)
+                ))
+                .fetchOne();
+    }
+
     private Expression<Long> getUnreadMessageCount(QChatRoom chatRoom, Username username) {
         QMessage message = QMessage.message;
 

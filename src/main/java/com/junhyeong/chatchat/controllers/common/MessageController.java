@@ -1,6 +1,7 @@
 package com.junhyeong.chatchat.controllers.common;
 
 import com.junhyeong.chatchat.applications.message.SendMessageService;
+import com.junhyeong.chatchat.applications.notification.MessageNotificationService;
 import com.junhyeong.chatchat.dtos.MessageRequest;
 import com.junhyeong.chatchat.dtos.MessageRequestDto;
 import com.junhyeong.chatchat.exceptions.UnknownRole;
@@ -13,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MessageController {
     private final SendMessageService sendMessageService;
+    private final MessageNotificationService messageNotificationService;
 
-    public MessageController(SendMessageService sendMessageService) {
+    public MessageController(SendMessageService sendMessageService,
+                             MessageNotificationService messageNotificationService) {
         this.sendMessageService = sendMessageService;
+        this.messageNotificationService = messageNotificationService;
     }
 
     @MessageMapping("/messages")
@@ -23,6 +27,8 @@ public class MessageController {
         MessageRequest messageRequest = MessageRequest.of(messageRequestDto);
 
         sendMessageService.sendMessage(messageRequest);
+
+        messageNotificationService.sendNotification(messageRequest);
     }
 
     @ExceptionHandler(UnknownRole.class)

@@ -1,5 +1,8 @@
 package com.junhyeong.chatchat.models.commom;
 
+import com.junhyeong.chatchat.exceptions.InvalidName;
+import com.junhyeong.chatchat.exceptions.InvalidUsername;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -14,6 +17,14 @@ public class Username implements Serializable {
     }
 
     public Username(String value) {
+        setValue(value);
+    }
+
+    private void setValue(String value) {
+        if (value.length() > 20) {
+            throw new InvalidUsername();
+        }
+
         this.value = value;
     }
 

@@ -39,7 +39,7 @@ public class CustomerSessionController {
     ) {
         try {
             Username userName = Username.of(loginRequestDto.username());
-            Password password = Password.of(loginRequestDto.password());
+            Password password = Password.of(loginRequestDto.password(), "encode");
 
             TokenDto token = loginService.login(userName, password);
 

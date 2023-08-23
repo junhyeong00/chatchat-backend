@@ -113,7 +113,7 @@ public class Company {
     }
 
     public void changePassword(Password password, PasswordEncoder passwordEncoder) {
-        this.password = Password.of(passwordEncoder.encode(password.getValue()));
+        this.password = Password.of(passwordEncoder.encode(password.getValue()), "encode");
     }
 
     public void authenticate(Password password, PasswordEncoder passwordEncoder) {

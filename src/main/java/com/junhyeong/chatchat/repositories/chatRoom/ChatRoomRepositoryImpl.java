@@ -99,6 +99,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                 .on(chatRoom.id.eq(message.chatRoomId))
                 .leftJoin(company)
                 .on(chatRoom.company.eq(company.username))
+                .where(chatRoom.customer.eq(customer))
                 .groupBy(chatRoom.id, company.name, company.profileImage,
                         message.content, message.createdAt, message.readStatus)
                 .having(message.createdAt.eq(
@@ -134,7 +135,9 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                 .on(chatRoom.id.eq(message.chatRoomId))
                 .leftJoin(customer)
                 .on(chatRoom.customer.eq(customer.username))
-                .where(message.type.eq(MessageType.GENERAL))
+                .where(message.type.eq(MessageType.GENERAL).and(
+                        chatRoom.company.eq(company)
+                ))
                 .groupBy(chatRoom.id, customer.name, customer.profileImage,
                         message.content, message.createdAt, message.readStatus)
                 .having(message.createdAt.eq(

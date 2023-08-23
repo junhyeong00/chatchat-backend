@@ -20,8 +20,12 @@ public class Password {
         setValue(value);
     }
 
+    public Password(String value, String encode) {
+        this.value = value;
+    }
+
     private void setValue(String value) {
-        Pattern pattern = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,}");
+        Pattern pattern = Pattern.compile("^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d~!@#$%^&*()-_=+]{8,40}$");
         Matcher matcher = pattern.matcher(value);
 
         if (!matcher.find()) {
@@ -31,8 +35,8 @@ public class Password {
         this.value = value;
     }
 
-    public static Password of(String password) {
-        return new Password(password);
+    public static Password of(String password, String encode) {
+        return new Password(password, encode);
     }
 
     public String getValue() {

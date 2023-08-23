@@ -5,7 +5,6 @@ import com.junhyeong.chatchat.dtos.CustomerProfileDto;
 import com.junhyeong.chatchat.dtos.MessageDto;
 import com.junhyeong.chatchat.dtos.PageDto;
 import com.junhyeong.chatchat.exceptions.AuthenticationFailed;
-import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Image;
 import com.junhyeong.chatchat.models.commom.Name;
 import com.junhyeong.chatchat.models.commom.Password;
@@ -76,7 +75,7 @@ public class Customer {
     }
 
     public void changePassword(Password password, PasswordEncoder passwordEncoder) {
-        this.password = Password.of(passwordEncoder.encode(password.getValue()));
+        this.password = Password.of(passwordEncoder.encode(password.getValue()), "encode");
     }
 
     public void authenticate(Password password, PasswordEncoder passwordEncoder) {

@@ -91,27 +91,29 @@ public class MessageNotificationService {
 
         Customer customer = customerRepository.findByUsername(chatRoom.customer())
                 .orElseThrow(CustomerNotFound::new);
-        sendChatRoomInformation(String.valueOf(customer.id()), customer.username(), "customer");
+        sendChatRoomInformation(String.valueOf(
+                customer.id()), customer.username(), "customer", chatRoom.id());
 
         Company company = companyRepository.findByUsername(chatRoom.company())
                 .orElseThrow(CompanyNotFound::new);
-        sendChatRoomInformation(String.valueOf(company.id()), company.username(), "company");
+        sendChatRoomInformation(String.valueOf(
+                company.id()), company.username(), "company", chatRoom.id());
     }
 
-    private void sendChatRoomInformation(String id, Username username, String userType) {
+    private void sendChatRoomInformation(String id, Username username, String userType, Long chatRoomId) {
         Map<String, SseEmitter> sseEmitters = sseEmitterRepository.findAllByUserId(id);
 
-        ChatRoomDto chatRoomDto = getChatRoomDto(username, userType);
+        ChatRoomDto chatRoomDto = getChatRoomDto(username, userType, chatRoomId);
 
         sseEmitters.forEach(
                 (key, emitter) -> sendToClient(emitter, key, chatRoomDto)
         );
     }
 
-    private ChatRoomDto getChatRoomDto(Username username, String userType) {
+    private ChatRoomDto getChatRoomDto(Username username, String userType, Long chatRoomId) {
         return switch (userType) {
-            case "company" -> chatRoomRepository.findDtoByCompany(username);
-            case "customer" -> chatRoomRepository.findDtoByCustomer(username);
+            case "company" -> chatRoomRepository.findDtoByCompany(username, chatRoomId);
+            case "customer" -> chatRoomRepository.findDtoByCustomer(username, chatRoomId);
             default -> throw new UnknownRole();
         };
     }

@@ -15,7 +15,6 @@ import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
 import com.junhyeong.chatchat.repositories.sseEmitter.SseEmitterRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -41,7 +40,6 @@ public class MessageNotificationService {
         this.chatRoomRepository = chatRoomRepository;
     }
 
-    @Transactional
     public SseEmitter subscribe(Username username, String userType) {
         Long userId = getUserId(username, userType);
 

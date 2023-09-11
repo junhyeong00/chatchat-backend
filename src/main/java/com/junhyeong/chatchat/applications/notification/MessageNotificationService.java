@@ -72,6 +72,7 @@ public class MessageNotificationService {
                     .name("sse")
                     .data(data));
         } catch (IOException exception) {
+            log.error("[SSE] - Error occurred while sending SSE event to the client", exception);
             sseEmitterRepository.deleteById(id);
             sseEmitter.completeWithError(exception);
         }
@@ -80,14 +81,14 @@ public class MessageNotificationService {
     private SseEmitter createEmitter(String id) {
         SseEmitter sseEmitter = sseEmitterRepository.save(id, new SseEmitter(DEFAULT_TIMEOUT));
 
-        sseEmitter.onCompletion(() -> sseEmitterRepository.deleteById(id));
-        sseEmitter.onTimeout(() -> sseEmitterRepository.deleteById(id));
-
         sseEmitter.onError(throwable -> {
-            log.error("[SSE] - ★★★★★★★★SseEmitters 파일 add 메서드 / [ onError ]");
+            log.error("[SSE] - ★★★★★★★★SseEmitters / [ onError ]");
             log.error("", throwable);
             sseEmitter.complete();
         });
+
+        sseEmitter.onTimeout(sseEmitter::complete);
+        sseEmitter.onCompletion(() -> sseEmitterRepository.deleteById(id));
 
         return sseEmitter;
     }
@@ -98,30 +99,18 @@ public class MessageNotificationService {
 
         Customer customer = customerRepository.findByUsername(chatRoom.customer())
                 .orElseThrow(CustomerNotFound::new);
-        sendChatRoomInformation(String.valueOf(
-                customer.id()), customer.username(), "customer", chatRoom.id());
+        sendChatRoomInformation(String.valueOf(customer.id()));
 
         Company company = companyRepository.findByUsername(chatRoom.company())
                 .orElseThrow(CompanyNotFound::new);
-        sendChatRoomInformation(String.valueOf(
-                company.id()), company.username(), "company", chatRoom.id());
+        sendChatRoomInformation(String.valueOf(company.id()));
     }
 
-    private void sendChatRoomInformation(String id, Username username, String userType, Long chatRoomId) {
+    private void sendChatRoomInformation(String id) {
         Map<String, SseEmitter> sseEmitters = sseEmitterRepository.findAllByUserId(id);
 
-        ChatRoomDto chatRoomDto = getChatRoomDto(username, userType, chatRoomId);
-
         sseEmitters.forEach(
-                (key, emitter) -> sendToClient(emitter, key, chatRoomDto)
+                (key, emitter) -> sendToClient(emitter, key, "receive message")
         );
-    }
-
-    private ChatRoomDto getChatRoomDto(Username username, String userType, Long chatRoomId) {
-        return switch (userType) {
-            case "company" -> chatRoomRepository.findDtoByCompany(username, chatRoomId);
-            case "customer" -> chatRoomRepository.findDtoByCustomer(username, chatRoomId);
-            default -> throw new UnknownRole();
-        };
     }
 }

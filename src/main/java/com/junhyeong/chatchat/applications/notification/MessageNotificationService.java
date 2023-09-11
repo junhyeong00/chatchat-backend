@@ -16,12 +16,15 @@ import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
 import com.junhyeong.chatchat.repositories.sseEmitter.SseEmitterRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
 
 @Service
 public class MessageNotificationService {
+    private static final Logger log = LoggerFactory.getLogger(MessageNotificationService.class);
     private final SseEmitterRepository sseEmitterRepository;
     private final CompanyRepository companyRepository;
     private final CustomerRepository customerRepository;
@@ -79,6 +82,12 @@ public class MessageNotificationService {
 
         sseEmitter.onCompletion(() -> sseEmitterRepository.deleteById(id));
         sseEmitter.onTimeout(() -> sseEmitterRepository.deleteById(id));
+
+        sseEmitter.onError(throwable -> {
+            log.error("[SSE] - ★★★★★★★★SseEmitters 파일 add 메서드 / [ onError ]");
+            log.error("", throwable);
+            sseEmitter.complete();
+        });
 
         return sseEmitter;
     }

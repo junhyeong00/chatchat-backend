@@ -1,6 +1,5 @@
 package com.junhyeong.chatchat.applications.notification;
 
-import com.junhyeong.chatchat.dtos.ChatRoomDto;
 import com.junhyeong.chatchat.dtos.MessageRequest;
 import com.junhyeong.chatchat.exceptions.ChatRoomNotFound;
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
@@ -31,7 +30,6 @@ public class MessageNotificationService {
     private final ChatRoomRepository chatRoomRepository;
 
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
-
 
     public MessageNotificationService(SseEmitterRepository sseEmitterRepository,
                                       CompanyRepository companyRepository,
@@ -81,14 +79,14 @@ public class MessageNotificationService {
     private SseEmitter createEmitter(String id) {
         SseEmitter sseEmitter = sseEmitterRepository.save(id, new SseEmitter(DEFAULT_TIMEOUT));
 
+        sseEmitter.onTimeout(sseEmitter::complete);
+        sseEmitter.onCompletion(() -> sseEmitterRepository.deleteById(id));
+
         sseEmitter.onError(throwable -> {
             log.error("[SSE] - ★★★★★★★★SseEmitters / [ onError ]");
             log.error("", throwable);
             sseEmitter.complete();
         });
-
-        sseEmitter.onTimeout(sseEmitter::complete);
-        sseEmitter.onCompletion(() -> sseEmitterRepository.deleteById(id));
 
         return sseEmitter;
     }

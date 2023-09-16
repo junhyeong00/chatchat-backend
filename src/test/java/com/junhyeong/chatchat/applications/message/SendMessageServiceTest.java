@@ -9,6 +9,7 @@ import com.junhyeong.chatchat.models.message.Message;
 import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
 import com.junhyeong.chatchat.repositories.message.MessageRepository;
+import com.junhyeong.chatchat.repositories.session.SessionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,19 +35,21 @@ class SendMessageServiceTest {
     private CompanyRepository companyRepository;
     private MessageRepository messageRepository;
     private SendMessageService sendMessageService;
+    private SessionRepository sessionRepository;
 
     @BeforeEach
     void setUp() {
         customerRepository = mock(CustomerRepository.class);
         companyRepository = mock(CompanyRepository.class);
         messageRepository = mock(MessageRepository.class);
+        sessionRepository = mock(SessionRepository.class);
 
         sendMessageService = new SendMessageService(
                 messagingTemplate,
                 customerRepository,
                 companyRepository,
-                messageRepository
-        );
+                messageRepository,
+                sessionRepository);
     }
 
     @Test

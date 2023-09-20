@@ -7,6 +7,7 @@ import com.junhyeong.chatchat.dtos.MessageRequestDto;
 import com.junhyeong.chatchat.exceptions.UnknownRole;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,12 +24,13 @@ public class MessageController {
     }
 
     @MessageMapping("/messages")
-    public void sendMessage(MessageRequestDto messageRequestDto) {
+    public void sendMessage(SimpMessageHeaderAccessor headerAccessor, MessageRequestDto messageRequestDto) {
         MessageRequest messageRequest = MessageRequest.of(messageRequestDto);
 
         sendMessageService.sendMessage(messageRequest);
 
         messageNotificationService.sendNotification(messageRequest);
+
     }
 
     @ExceptionHandler(UnknownRole.class)

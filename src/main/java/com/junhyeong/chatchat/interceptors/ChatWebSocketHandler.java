@@ -1,31 +1,83 @@
 package com.junhyeong.chatchat.interceptors;
 
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.junhyeong.chatchat.applications.notification.MessageNotificationService;
+import com.junhyeong.chatchat.exceptions.AuthenticationError;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.repositories.session.SessionRepository;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
+import com.junhyeong.chatchat.utils.JwtUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.stereotype.Component;
 
-public class ChatWebSocketHandler extends TextWebSocketHandler {
+@Component
+public class ChatWebSocketHandler implements ChannelInterceptor {
+    private static final Logger log = LoggerFactory.getLogger(MessageNotificationService.class);
     private SessionRepository sessionRepository;
+    private JwtUtil jwtUtil;
 
-    public ChatWebSocketHandler(SessionRepository sessionRepository) {
+    public ChatWebSocketHandler(SessionRepository sessionRepository, JwtUtil jwtUtil) {
         this.sessionRepository = sessionRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        Long chatRoomId = (Long) session.getAttributes().get("chatRoomId");
+    public Message<?> preSend(Message<?> message, MessageChannel channel) {
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+        if(accessor.getCommand() == StompCommand.CONNECT) {
+            log.info("[web socket] - preSend 메서드 /connect / 시작");
 
-        Username username = (Username) session.getAttributes().get("username");
+            String authorization = accessor.getFirstNativeHeader("Authorization");
+            log.debug("authorization: " + authorization);
 
-        sessionRepository.addSession(chatRoomId, session.getId() , username);
-    }
+            if (authorization == null || !authorization.startsWith("Bearer ")) {
+                throw new AuthenticationError();
+            }
 
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        Long chatRoomId = (Long) session.getAttributes().get("chatRoomId");
+            String accessToken = authorization.substring("Bearer ".length());
 
-        sessionRepository.removeSession(chatRoomId, session.getId());
+            try {
+                Username username = jwtUtil.decode(accessToken);
+                log.debug("username: " + username.value());
+
+                String requestUri = accessor.getDestination();
+                log.debug("requestUri: " + requestUri);
+
+                Long chatRoomId = Long.valueOf(requestUri.split("chatrooms/")[1]);
+
+                String sessionId = accessor.getSessionId();
+                log.debug("sessionId: " + sessionId);
+
+                sessionRepository.addSession(chatRoomId, sessionId, username);
+
+                log.info("[web socket] - preSend 메서드 / connect / 완료");
+                return message;
+            } catch (JWTDecodeException exception) {
+                throw new AuthenticationError();
+            }
+        }
+
+        if (accessor.getCommand() == StompCommand.DISCONNECT) {
+            log.info("[web socket] - preSend 메서드 / disconnect / 시작");
+
+            String requestUri = accessor.getDestination();
+            log.debug("requestUri: " + requestUri);
+
+            Long chatRoomId = Long.valueOf(requestUri.split("chatrooms/")[1]);
+
+            String sessionId = accessor.getSessionId();
+            log.debug("sessionId: " + sessionId);
+
+            sessionRepository.removeSession(chatRoomId, sessionId);
+
+            log.info("[web socket] - preSend 메서드 / disconnect / 끝");
+        }
+
+        return message;
     }
 }

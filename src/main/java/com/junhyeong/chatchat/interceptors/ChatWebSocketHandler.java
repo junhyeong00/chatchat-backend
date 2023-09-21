@@ -29,7 +29,8 @@ public class ChatWebSocketHandler implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        if(accessor.getCommand() == StompCommand.CONNECT) {
+        
+        if(accessor.getCommand() == StompCommand.SUBSCRIBE) {
             log.info("[web socket] - preSend 메서드 /connect / 시작");
 
             String authorization = accessor.getFirstNativeHeader("Authorization");
@@ -62,7 +63,7 @@ public class ChatWebSocketHandler implements ChannelInterceptor {
             }
         }
 
-        if (accessor.getCommand() == StompCommand.DISCONNECT) {
+        if (accessor.getCommand() == StompCommand.UNSUBSCRIBE) {
             log.info("[web socket] - preSend 메서드 / disconnect / 시작");
 
             String requestUri = accessor.getFirstNativeHeader("host");

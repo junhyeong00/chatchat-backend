@@ -33,7 +33,7 @@ public class ChatWebSocketHandler implements ChannelInterceptor {
             log.info("[web socket] - preSend 메서드 /connect / 시작");
 
             String authorization = accessor.getFirstNativeHeader("Authorization");
-            log.debug("authorization: " + authorization);
+            log.info("authorization: " + authorization);
 
             if (authorization == null || !authorization.startsWith("Bearer ")) {
                 throw new AuthenticationError();
@@ -43,15 +43,15 @@ public class ChatWebSocketHandler implements ChannelInterceptor {
 
             try {
                 Username username = jwtUtil.decode(accessToken);
-                log.debug("username: " + username.value());
+                log.info("username: " + username.value());
 
-                String requestUri = accessor.getFirstNativeHeader("host");
-                log.debug("requestUri: " + requestUri);
+                String requestUri = accessor.getDestination();
+                log.info("requestUri: " + requestUri);
 
                 Long chatRoomId = Long.valueOf(requestUri.split("chatrooms/")[1]);
 
                 String sessionId = accessor.getSessionId();
-                log.debug("sessionId: " + sessionId);
+                log.info("sessionId: " + sessionId);
 
                 sessionRepository.addSession(chatRoomId, sessionId, username);
 
@@ -66,12 +66,12 @@ public class ChatWebSocketHandler implements ChannelInterceptor {
             log.info("[web socket] - preSend 메서드 / disconnect / 시작");
 
             String requestUri = accessor.getFirstNativeHeader("host");
-            log.debug("requestUri: " + requestUri);
+            log.info("requestUri: " + requestUri);
 
             Long chatRoomId = Long.valueOf(requestUri.split("chatrooms/")[1]);
 
             String sessionId = accessor.getSessionId();
-            log.debug("sessionId: " + sessionId);
+            log.info("sessionId: " + sessionId);
 
             sessionRepository.removeSession(chatRoomId, sessionId);
 

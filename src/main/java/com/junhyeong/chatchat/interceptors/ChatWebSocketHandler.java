@@ -46,10 +46,8 @@ public class ChatWebSocketHandler implements ChannelInterceptor {
                 Username username = jwtUtil.decode(accessToken);
                 log.info("username: " + username.value());
 
-                String requestUri = accessor.getDestination();
-                log.info("requestUri: " + requestUri);
-
-                Long chatRoomId = Long.valueOf(requestUri.split("chatrooms/")[1]);
+                Long chatRoomId = Long.valueOf(accessor.getFirstNativeHeader("id"));
+                log.info("chatRoomId: " + chatRoomId);
 
                 String sessionId = accessor.getSessionId();
                 log.info("sessionId: " + sessionId);
@@ -63,13 +61,11 @@ public class ChatWebSocketHandler implements ChannelInterceptor {
             }
         }
 
-        if (accessor.getCommand() == StompCommand.UNSUBSCRIBE) {
+        if (accessor.getCommand() == StompCommand.DISCONNECT) {
             log.info("[web socket] - preSend 메서드 / disconnect / 시작");
 
-            String requestUri = accessor.getFirstNativeHeader("host");
-            log.info("requestUri: " + requestUri);
-
-            Long chatRoomId = Long.valueOf(requestUri.split("chatrooms/")[1]);
+            Long chatRoomId = Long.valueOf(accessor.getFirstNativeHeader("id"));
+            log.info("chatRoomId: " + chatRoomId);
 
             String sessionId = accessor.getSessionId();
             log.info("sessionId: " + sessionId);

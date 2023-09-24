@@ -7,7 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface ChatRoomRepositoryQueryDsl {
     Page<ChatRoomDto> findAllDtoByCompany(Username company, Pageable pageable);
-    Page<ChatRoomDto> findAllDtoByCustomer(Username company, Pageable pageable);
-    ChatRoomDto findDtoByCompany(Username company, Long chatRoomId);
-    ChatRoomDto findDtoByCustomer(Username company, Long chatRoomId);
+    Page<ChatRoomDto> findAllDtoByCustomer(Username customer, Pageable pageable);
 }

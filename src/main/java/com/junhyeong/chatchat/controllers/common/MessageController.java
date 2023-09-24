@@ -4,6 +4,7 @@ import com.junhyeong.chatchat.applications.message.SendMessageService;
 import com.junhyeong.chatchat.applications.notification.MessageNotificationService;
 import com.junhyeong.chatchat.dtos.MessageRequest;
 import com.junhyeong.chatchat.dtos.MessageRequestDto;
+import com.junhyeong.chatchat.exceptions.ReceiverDeleted;
 import com.junhyeong.chatchat.exceptions.UnknownRole;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -36,6 +37,12 @@ public class MessageController {
     @ExceptionHandler(UnknownRole.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String unknownRole(Exception e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(ReceiverDeleted.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String receiverDeleted(Exception e) {
         return e.getMessage();
     }
 }

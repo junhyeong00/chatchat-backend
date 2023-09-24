@@ -8,6 +8,8 @@ import java.util.Objects;
 
 @Embeddable
 public class Name {
+    public static final String UNKNOWN_NAME = "(알 수 없음)";
+
     @Column(name = "name")
     private String value;
 

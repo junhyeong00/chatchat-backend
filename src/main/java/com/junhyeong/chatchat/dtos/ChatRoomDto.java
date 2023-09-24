@@ -2,6 +2,7 @@ package com.junhyeong.chatchat.dtos;
 
 import com.junhyeong.chatchat.models.commom.Image;
 import com.junhyeong.chatchat.models.commom.Name;
+import com.junhyeong.chatchat.models.commom.Status;
 import com.junhyeong.chatchat.models.message.Content;
 
 import java.time.LocalDateTime;
@@ -15,8 +16,8 @@ public class ChatRoomDto {
     private String lastMessageDate;
     private Long unreadMessageCount;
 
-    public ChatRoomDto(Long id, Name receiverName, Image receiverImageUrl, Content lastMessage,
-                       LocalDateTime lastMessageDate, Long unreadMessageCount
+    public ChatRoomDto(Long id, Name receiverName, Image receiverImageUrl, Status receiverStatus,
+                       Content lastMessage, LocalDateTime lastMessageDate, Long unreadMessageCount
     ) {
         this.id = id;
         this.receiverName = receiverName.value();
@@ -24,10 +25,15 @@ public class ChatRoomDto {
         this.lastMessage = lastMessage.value();
         this.lastMessageDate = lastMessageDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
         this.unreadMessageCount = unreadMessageCount;
+
+        if (receiverStatus.equals(Status.DELETED)) {
+            this.receiverName = Name.UNKNOWN_NAME;
+            this.receiverImageUrl = Image.DEFAULT_PROFILE_IMAGE;
+        }
     }
 
     public static ChatRoomDto fake() {
-        return new ChatRoomDto(1L, new Name("고객"), new Image("이미지"),
+        return new ChatRoomDto(1L, new Name("고객"), new Image("이미지"), Status.ACTIVE,
                 new Content("내용"), LocalDateTime.of(2023, 1, 1, 1, 1), 3L);
     }
 

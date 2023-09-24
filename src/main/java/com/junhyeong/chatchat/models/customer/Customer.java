@@ -113,11 +113,23 @@ public class Customer {
     }
 
     public ChatRoomDetailDto toRoomDetailDto(Long chatRoomId, List<MessageDto> messages, PageDto page) {
+        if (this.isDeleted()) {
+            return new ChatRoomDetailDto(
+                    chatRoomId,
+                    this.id,
+                    Name.UNKNOWN_NAME,
+                    Image.DEFAULT_PROFILE_IMAGE,
+                    this.isDeleted(),
+                    messages,
+                    page);
+        }
+
         return new ChatRoomDetailDto(
                 chatRoomId,
                 this.id,
                 this.name.value(),
                 this.profileImage.value(),
+                this.isDeleted(),
                 messages,
                 page);
     }
@@ -133,5 +145,9 @@ public class Customer {
 
     public void delete() {
         this.status = Status.DELETED;
+    }
+
+    public boolean isDeleted() {
+        return status.equals(Status.DELETED);
     }
 }

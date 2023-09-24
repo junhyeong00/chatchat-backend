@@ -1,5 +1,6 @@
 package com.junhyeong.chatchat.applications.company;
 
+import com.junhyeong.chatchat.exceptions.CompanyDeleted;
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
@@ -15,10 +16,14 @@ public class GetCompanyService {
         this.companyRepository = companyRepository;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Company find(Username username) {
         Company company = companyRepository.findByUsername(username)
                 .orElseThrow(CompanyNotFound::new);
+
+        if (company.isDeleted()) {
+            throw new CompanyDeleted();
+        }
 
         return company;
     }

@@ -6,7 +6,6 @@ import com.junhyeong.chatchat.dtos.CompanyProfileDto;
 import com.junhyeong.chatchat.dtos.MessageDto;
 import com.junhyeong.chatchat.dtos.PageDto;
 import com.junhyeong.chatchat.exceptions.AuthenticationFailed;
-import com.junhyeong.chatchat.exceptions.LoginFailed;
 import com.junhyeong.chatchat.models.commom.Image;
 import com.junhyeong.chatchat.models.commom.Name;
 import com.junhyeong.chatchat.models.commom.Password;
@@ -176,16 +175,32 @@ public class Company {
     }
 
     public ChatRoomDetailDto toRoomDetailDto(Long chatRoomId, List<MessageDto> messages, PageDto page) {
+        if (this.isDeleted()) {
+            return new ChatRoomDetailDto(
+                    chatRoomId,
+                    this.id,
+                    Name.UNKNOWN_NAME,
+                    Image.DEFAULT_PROFILE_IMAGE,
+                    this.isDeleted(),
+                    messages,
+                    page);
+        }
+
         return new ChatRoomDetailDto(
                 chatRoomId,
                 this.id,
                 this.name.value(),
                 this.profileImage.value(),
+                this.isDeleted(),
                 messages,
                 page);
     }
 
     public void delete() {
         this.status = Status.DELETED;
+    }
+
+    public boolean isDeleted() {
+        return status.equals(Status.DELETED);
     }
 }

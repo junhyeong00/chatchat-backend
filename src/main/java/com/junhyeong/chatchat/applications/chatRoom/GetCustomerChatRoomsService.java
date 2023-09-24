@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class GetCustomerChatRoomsService {
+public class  GetCustomerChatRoomsService {
     private final CustomerRepository customerRepository;
     private final ChatRoomRepository chatRoomRepository;
 
@@ -33,6 +33,7 @@ public class GetCustomerChatRoomsService {
 
         Page<ChatRoomDto> chatRooms = chatRoomRepository.findAllDtoByCustomer(username, pageable);
 
+        //탈퇴 처리
         return chatRooms;
     }
 }

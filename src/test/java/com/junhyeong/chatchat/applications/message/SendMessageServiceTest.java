@@ -2,10 +2,13 @@ package com.junhyeong.chatchat.applications.message;
 
 import com.junhyeong.chatchat.dtos.MessageDto;
 import com.junhyeong.chatchat.dtos.MessageRequest;
+import com.junhyeong.chatchat.models.chatRoom.ChatRoom;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
+import com.junhyeong.chatchat.models.customer.Customer;
 import com.junhyeong.chatchat.models.message.Content;
 import com.junhyeong.chatchat.models.message.Message;
+import com.junhyeong.chatchat.repositories.chatRoom.ChatRoomRepository;
 import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
 import com.junhyeong.chatchat.repositories.message.MessageRepository;
@@ -36,6 +39,7 @@ class SendMessageServiceTest {
     private MessageRepository messageRepository;
     private SendMessageService sendMessageService;
     private SessionRepository sessionRepository;
+    private ChatRoomRepository chatRoomRepository;
 
     @BeforeEach
     void setUp() {
@@ -43,13 +47,15 @@ class SendMessageServiceTest {
         companyRepository = mock(CompanyRepository.class);
         messageRepository = mock(MessageRepository.class);
         sessionRepository = mock(SessionRepository.class);
+        chatRoomRepository = mock(ChatRoomRepository.class);
 
         sendMessageService = new SendMessageService(
                 messagingTemplate,
                 customerRepository,
                 companyRepository,
                 messageRepository,
-                sessionRepository);
+                sessionRepository,
+                chatRoomRepository);
     }
 
     @Test
@@ -71,6 +77,14 @@ class SendMessageServiceTest {
         String role = "company";
 
         MessageRequest messageRequest = MessageRequest.fake(content, role);
+
+        ChatRoom chatRoom = ChatRoom.fake(messageRequest.getChatRoomId());
+
+        given(chatRoomRepository.findById(messageRequest.getChatRoomId()))
+                .willReturn(Optional.of(chatRoom));
+
+        given(customerRepository.findByUsername(chatRoom.customer()))
+                .willReturn(Optional.of(Customer.fake(chatRoom.customer())));
 
         sendMessageService.sendMessage(messageRequest);
 

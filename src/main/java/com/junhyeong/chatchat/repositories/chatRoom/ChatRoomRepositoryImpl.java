@@ -54,7 +54,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                 .on(chatRoom.customer.eq(customer.username))
                 .where(message.type.eq(MessageType.GENERAL).and(
                         chatRoom.company.eq(company)))
-                .groupBy(chatRoom.id, customer.name, customer.profileImage,
+                .groupBy(chatRoom.id, customer.name, customer.profileImage, customer.status,
                          message.content, message.createdAt, message.readStatus)
                 .having(message.createdAt.eq(
                         getLastCreatedAt(chatRoom)).and(
@@ -103,7 +103,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                 .leftJoin(company)
                 .on(chatRoom.company.eq(company.username))
                 .where(chatRoom.customer.eq(customer))
-                .groupBy(chatRoom.id, company.name, company.profileImage,
+                .groupBy(chatRoom.id, company.name, company.profileImage, company.status,
                         message.content, message.createdAt, message.readStatus)
                 .having(message.createdAt.eq(
                         getLastCreatedAt(chatRoom)

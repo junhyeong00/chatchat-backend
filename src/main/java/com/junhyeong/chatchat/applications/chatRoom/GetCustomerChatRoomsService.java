@@ -33,7 +33,6 @@ public class  GetCustomerChatRoomsService {
 
         Page<ChatRoomDto> chatRooms = chatRoomRepository.findAllDtoByCustomer(username, pageable);
 
-        //탈퇴 처리
         return chatRooms;
     }
 }

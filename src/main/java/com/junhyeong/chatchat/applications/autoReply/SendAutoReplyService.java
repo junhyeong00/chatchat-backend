@@ -8,6 +8,7 @@ import com.junhyeong.chatchat.models.autoReply.AutoReply;
 import com.junhyeong.chatchat.models.chatRoom.ChatRoom;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
+import com.junhyeong.chatchat.models.customer.Customer;
 import com.junhyeong.chatchat.models.message.Content;
 import com.junhyeong.chatchat.models.message.Message;
 import com.junhyeong.chatchat.models.message.MessageType;
@@ -42,9 +43,8 @@ public class SendAutoReplyService {
 
     @Transactional
     public void send(Username username, Long autoReplyId, Long chatRoomId) {
-        if (!customerRepository.existsByUsername(username)) {
-            throw new Unauthorized();
-        }
+        Customer customer = customerRepository.findByUsername(username)
+                .orElseThrow(Unauthorized::new);
 
         AutoReply autoReply = autoReplyRepository.findById(autoReplyId)
                 .orElseThrow(AutoReplyNotFound::new);
@@ -57,10 +57,11 @@ public class SendAutoReplyService {
 
         Message question = new Message(
                 chatRoom.id(),
-                new Sender(company.id(), company.username()),
+                new Sender(customer.id(), customer.username()),
                 new Content(autoReply.question().value()),
                 MessageType.AUTO
         );
+        question.read();
 
         Message answer = new Message(
                 chatRoom.id(),
@@ -68,6 +69,7 @@ public class SendAutoReplyService {
                 new Content(autoReply.answer().value()),
                 MessageType.AUTO
         );
+        answer.read();
 
         messageRepository.save(question);
         messageRepository.save(answer);

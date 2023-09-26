@@ -8,6 +8,7 @@ import com.junhyeong.chatchat.models.autoReply.AutoReply;
 import com.junhyeong.chatchat.models.chatRoom.ChatRoom;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
+import com.junhyeong.chatchat.models.customer.Customer;
 import com.junhyeong.chatchat.models.message.Content;
 import com.junhyeong.chatchat.models.message.Message;
 import com.junhyeong.chatchat.repositories.autoReply.AutoReplyRepository;
@@ -53,8 +54,8 @@ class SendAutoReplyServiceTest {
         Long autoReplyId = 1L;
         Long chatRoomId = 1L;
 
-        given(customerRepository.existsByUsername(username))
-                .willReturn(true);
+        given(customerRepository.findByUsername(username))
+                .willReturn(Optional.of(Customer.fake(username)));
 
         given(companyRepository.findByUsername(company))
                 .willReturn(Optional.of(Company.fake(company)));
@@ -77,8 +78,8 @@ class SendAutoReplyServiceTest {
         Long autoReplyId = 1L;
         Long chatRoomId = 1L;
 
-        given(customerRepository.existsByUsername(invalidUsername))
-                .willReturn(false);
+        given(customerRepository.findByUsername(invalidUsername))
+                .willThrow(Unauthorized.class);
 
         assertThrows(Unauthorized.class,
                 () -> sendAutoReplyService.send(invalidUsername, autoReplyId, chatRoomId));
@@ -91,8 +92,8 @@ class SendAutoReplyServiceTest {
         Long autoReplyId = 1L;
         Long chatRoomId = 1L;
 
-        given(customerRepository.existsByUsername(username))
-                .willReturn(true);
+        given(customerRepository.findByUsername(username))
+                .willReturn(Optional.of(Customer.fake(username)));
 
         given(autoReplyRepository.findById(autoReplyId))
                 .willReturn(Optional.of(AutoReply.fake(company)));
@@ -114,8 +115,8 @@ class SendAutoReplyServiceTest {
         Long autoReplyId = 999L;
         Long chatRoomId = 1L;
 
-        given(customerRepository.existsByUsername(username))
-                .willReturn(true);
+        given(customerRepository.findByUsername(username))
+                .willReturn(Optional.of(Customer.fake(username)));
 
         given(autoReplyRepository.findById(autoReplyId))
                 .willThrow(AutoReplyNotFound.class);
@@ -134,8 +135,8 @@ class SendAutoReplyServiceTest {
         Long autoReplyId = 1L;
         Long chatRoomId = 999L;
 
-        given(customerRepository.existsByUsername(username))
-                .willReturn(true);
+        given(customerRepository.findByUsername(username))
+                .willReturn(Optional.of(Customer.fake(username)));
 
         given(autoReplyRepository.findById(autoReplyId))
                 .willReturn(Optional.of(AutoReply.fake(company)));

@@ -25,7 +25,7 @@ public class MessageController {
     }
 
     @MessageMapping("/messages")
-    public void sendMessage(SimpMessageHeaderAccessor headerAccessor, MessageRequestDto messageRequestDto) {
+    public void sendMessage(MessageRequestDto messageRequestDto) {
         MessageRequest messageRequest = MessageRequest.of(messageRequestDto);
 
         sendMessageService.sendMessage(messageRequest);

@@ -57,7 +57,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                 .groupBy(chatRoom.id, customer.name, customer.profileImage, customer.status,
                          message.content, message.createdAt, message.readStatus)
                 .having(message.createdAt.eq(
-                        getLastCreatedAt(chatRoom)).and(
+                        getLastGeneralMessageCreatedAt(chatRoom)).and(
                         chatRoom.id.in(
                                 JPAExpressions
                                         .selectDistinct(message.chatRoomId)
@@ -106,7 +106,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
                 .groupBy(chatRoom.id, company.name, company.profileImage, company.status,
                         message.content, message.createdAt, message.readStatus)
                 .having(message.createdAt.eq(
-                        getLastCreatedAt(chatRoom)
+                        getLastMessageCreatedAt(chatRoom)
                 ))
                 .orderBy(message.createdAt.max().desc())
                 .offset(pageable.getOffset())
@@ -132,12 +132,22 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryQueryDsl {
         );
     }
 
-    private JPQLQuery<LocalDateTime> getLastCreatedAt(QChatRoom chatRoom) {
+    private JPQLQuery<LocalDateTime> getLastMessageCreatedAt(QChatRoom chatRoom) {
         QMessage message = QMessage.message;
 
         return JPAExpressions.select(message.createdAt.max())
                 .from(message)
                 .where(message.chatRoomId.eq(chatRoom.id));
+    }
+
+    private JPQLQuery<LocalDateTime> getLastGeneralMessageCreatedAt(QChatRoom chatRoom) {
+        QMessage message = QMessage.message;
+
+        return JPAExpressions.select(message.createdAt.max())
+                .from(message)
+                .where(message.chatRoomId.eq(chatRoom.id).and(
+                        message.type.eq(MessageType.GENERAL)
+                ));
     }
 
     private Long getPageCountByCompany(Username company, QChatRoom chatRoom) {

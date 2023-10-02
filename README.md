@@ -5,6 +5,11 @@
 
 <br>
 
+### 배포 URL 
+- https://client.chatchat-web.site/
+  
+<br>
+
 ### API 설계 
 - https://chatchat.gitbook.io/api/
 

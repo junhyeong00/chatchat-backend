@@ -1,5 +1,6 @@
 package com.junhyeong.chatchat.applications.autoReply;
 
+import com.junhyeong.chatchat.dtos.SendAutoReplyDto;
 import com.junhyeong.chatchat.exceptions.AutoReplyNotFound;
 import com.junhyeong.chatchat.exceptions.ChatRoomNotFound;
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
@@ -42,7 +43,7 @@ public class SendAutoReplyService {
     }
 
     @Transactional
-    public void send(Username username, Long autoReplyId, Long chatRoomId) {
+    public SendAutoReplyDto send(Username username, Long autoReplyId, Long chatRoomId) {
         Customer customer = customerRepository.findByUsername(username)
                 .orElseThrow(Unauthorized::new);
 
@@ -73,5 +74,7 @@ public class SendAutoReplyService {
 
         messageRepository.save(question);
         messageRepository.save(answer);
+
+        return new SendAutoReplyDto(autoReply.answer().value());
     }
 }

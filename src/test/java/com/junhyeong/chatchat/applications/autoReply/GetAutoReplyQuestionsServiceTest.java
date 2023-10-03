@@ -6,7 +6,6 @@ import com.junhyeong.chatchat.exceptions.Unauthorized;
 import com.junhyeong.chatchat.models.autoReply.AutoReply;
 import com.junhyeong.chatchat.models.commom.Username;
 import com.junhyeong.chatchat.models.company.Company;
-import com.junhyeong.chatchat.models.customer.Customer;
 import com.junhyeong.chatchat.repositories.autoReply.AutoReplyRepository;
 import com.junhyeong.chatchat.repositories.company.CompanyRepository;
 import com.junhyeong.chatchat.repositories.customer.CustomerRepository;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;

@@ -5,6 +5,7 @@ import com.junhyeong.chatchat.applications.autoReply.SendAutoReplyService;
 import com.junhyeong.chatchat.dtos.AutoReplyQuestionDto;
 import com.junhyeong.chatchat.dtos.AutoReplyQuestionsDto;
 import com.junhyeong.chatchat.dtos.AutoReplyRequestDto;
+import com.junhyeong.chatchat.dtos.SendAutoReplyDto;
 import com.junhyeong.chatchat.exceptions.AutoReplyNotFound;
 import com.junhyeong.chatchat.exceptions.ChatRoomNotFound;
 import com.junhyeong.chatchat.exceptions.CompanyNotFound;
@@ -50,13 +51,13 @@ public class CustomerAutoReplyController {
 
     @PostMapping("{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void sendAutoReply(
+    public SendAutoReplyDto sendAutoReply(
             @RequestAttribute Username username,
             @PathVariable Long id,
             @RequestBody AutoReplyRequestDto autoReplyRequestDto
     ) {
         try {
-            sendAutoReplyService.send(username, id, autoReplyRequestDto.chatRoomId());
+            return sendAutoReplyService.send(username, id, autoReplyRequestDto.chatRoomId());
         } catch (Unauthorized e) {
             throw new Unauthorized();
         } catch (ChatRoomNotFound e) {

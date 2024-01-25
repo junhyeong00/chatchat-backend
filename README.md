@@ -1,6 +1,14 @@
 # ChatChat
 
+<p align="center">
+  <br>
+  <img width="900" alt="스크린샷 2024-01-22 오후 10 04 05" 
+    src="https://github.com/junhyeong00/chatchat-backend/assets/107493122/3683c122-32d9-4713-99ee-efa79c5dc8d6">
+  <br>
+</p>
+
 ## 프로젝트 소개
+
 기업-고객 간 자주 묻는 질문이나 1:1 상담 등의 소통을 간편하게 할 수 있도록 도와주는 채팅 서비스입니다.
 
 <br>
